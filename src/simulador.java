@@ -20,12 +20,20 @@ public class simulador {
 
             switch (menuPrincipal) {
                 case 1:
-                    System.out.printf("%nSeleccione el planeta al que desea viajar: %n%n");
-                    for (int i = 0; i < listaPlanetas.length; i++) {
-                        System.out.printf("%s. %s%n", i + 1, listaPlanetas[i]);
-                    }
-                    var planetaSeleccionado = entrada.nextInt();
-                    mostrarInfoPlaneta(planetaSeleccionado);
+                boolean exitPlaneta = false;
+                int salidaPlaneta;
+                    
+                    do {
+                        System.out.printf("%nSeleccione el planeta al que desea viajar: %n%n");
+                        for (int i = 0; i < listaPlanetas.length; i++) {
+                            System.out.printf("%s. %s%n", i + 1, listaPlanetas[i]);
+                        }
+                        var planetaSeleccionado = entrada.nextInt();
+                        mostrarInfoPlaneta(planetaSeleccionado);
+                        System.out.printf("%n¿Esta seguro que quiere viajar al planeta seleccionado?%n%n1. Si%n2. No%n%n");
+                        salidaPlaneta = entrada.nextInt();
+                        exitPlaneta = (salidaPlaneta == 1) ? exitPlaneta = true : exitPlaneta;  
+                    } while (!exitPlaneta);
 
                     break;
                 case 2:
