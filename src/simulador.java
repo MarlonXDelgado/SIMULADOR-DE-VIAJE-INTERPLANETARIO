@@ -4,8 +4,8 @@ public class simulador {
 
     public static void startGame() {
         var entrada = new Scanner(System.in);
-        String listaPlanetas[] = { "Mercurio", "Venus", "Marte", "Jupiter", "saturno", "Urano", "neptuno" };
-        String listaNaves[] = { "Bronce", "Plata", "Oro", "Diamante", "Rubi" };
+        String listaPlanetas[] = {"Mercurio", "Venus", "Marte", "Jupiter", "saturno", "Urano", "neptuno"};
+        String listaNaves[] = {"Falcon00", "Falcon002", "Falcon003", "Falcon004", "Falcon005"};
         boolean exit = false;
         int menuPrincipal, menuNaves;
 
@@ -20,9 +20,9 @@ public class simulador {
 
             switch (menuPrincipal) {
                 case 1:
-                boolean exitPlaneta = false;
-                int salidaPlaneta;
-                    
+                    boolean exitPlaneta = false;
+                    int salidaPlaneta;
+
                     do {
                         System.out.printf("%nSeleccione el planeta al que desea viajar: %n%n");
                         for (int i = 0; i < listaPlanetas.length; i++) {
@@ -30,13 +30,58 @@ public class simulador {
                         }
                         var planetaSeleccionado = entrada.nextInt();
                         mostrarInfoPlaneta(planetaSeleccionado);
-                        System.out.printf("%n¿Esta seguro que quiere viajar al planeta seleccionado?%n%n1. Si%n2. No%n%n");
+                        System.out.printf(
+                                "%n¿Esta seguro que quiere viajar al planeta seleccionado?%n%n1. Si%n2. No%n%n");
                         salidaPlaneta = entrada.nextInt();
-                        exitPlaneta = (salidaPlaneta == 1) ? exitPlaneta = true : exitPlaneta;  
+                        exitPlaneta = (salidaPlaneta == 1) ? exitPlaneta = true : exitPlaneta;
                     } while (!exitPlaneta);
 
                     break;
                 case 2:
+                    do {
+                        System.out.printf("%n%n====GESTION DE LA NAVE ESPACIAL=====%n%n");
+                        System.out.println("1. Seleccionar una nave para el viaje");
+                        System.out.println("2. Ingresar la cantidad de pasajeros");
+                        System.out.println("3. Gestionar recursos de la nave");
+                        System.out.println("4. Calculo de la duración del viaje");
+                        System.out.printf("5. Salir al menu principal%n%n");
+
+                        menuNaves = entrada.nextInt();
+
+                        switch (menuNaves) {
+                            case 1:
+                                boolean exitNave = false;
+                                int salidaNave;
+
+                                do {
+                                    System.out.printf("%nSeleccione el planeta al que desea viajar: %n%n");
+                                    for (int i = 0; i < listaNaves.length; i++) {
+                                        System.out.printf("%s. %s%n", i + 1, listaNaves[i]);
+                                    }
+                                    var naveSeleccionado = entrada.nextInt();
+                                    mostrarInfoNave(naveSeleccionado);
+                                    System.out.printf(
+                                            "%n¿Esta seguro que desea usar la nave seleccionada?%n%n1. Si%n2. No%n%n");
+                                    salidaNave = entrada.nextInt();
+                                    exitNave = (salidaNave == 1) ? exitNave = true : exitNave;
+                                } while (!exitNave);
+
+                                break;
+                            case 2:
+
+                                break;
+                            case 3:
+
+                                break;
+                            case 4:
+
+                                break;
+                            default:
+                                System.out.printf("%nOpcion incorrecta, por favor selecciona una opcion valida.%n");
+                                break;
+                        }
+
+                    } while (menuNaves != 5);
 
                     break;
                 case 3:
@@ -57,8 +102,50 @@ public class simulador {
         entrada.close();
     }
 
-    private static void mostrarInfoPlaneta(int planetaSeleccionado) {
+    private static void mostrarInfoNave(int naveSeleccionado) {
+        double velocidadNave = 0;
+        String mensaje = ""; 
+
+        if (naveSeleccionado == 1) {
+            mensaje = """
+                                    Información de la Nave seleccionada
+
+                    Nombre: Falcon001
+                    Especialidad: Carga de pasajeros
+                    Capacidad de carga: 10 personas
+                    Velocidad Maxima: 1.900.000 km/hora
+
+                    """;
+            velocidadNave = 1900000;
+        }else if (naveSeleccionado == 2) {
+            mensaje = """
+                                    Información de la Nave seleccionada
+
+                    Nombre: Falcon002
+                    Especialidad: Velocidad Ultra
+                    Capacidad de carga: 5 personas
+                    Velocidad Maxima: 3.500.000 km/hora
+
+                    """;
+            velocidadNave = 1900000;
+        }else if(naveSeleccionado == 3) {
+            mensaje = """
+                                    Información de la Nave seleccionada
+
+                    Nombre: Falcon003
+                    Especialidad: Carga Mixta
+                    Capacidad de carga: 7 personas
+                    Velocidad Maxima: 1.900.000 km/hora
+
+                    """;
+            velocidadNave = 1900000;
+        }
+
+    }
+
+    private static double mostrarInfoPlaneta(int planetaSeleccionado) {
         String mensaje = "";
+        double distanciaPlaneta = 0;
         if (planetaSeleccionado == 1) {
             mensaje = """
 
@@ -80,6 +167,8 @@ public class simulador {
 
 
                                                             """;
+            distanciaPlaneta = 91000000;
+
         } else if (planetaSeleccionado == 2) {
             mensaje = """
 
@@ -99,8 +188,9 @@ public class simulador {
 
                     * Superficie aplastada: La presión atmosférica en su superficie es 90 veces mayor que la de la Tierra, similar a estar a 1 km bajo el agua.
                                         """;
+            distanciaPlaneta = 41000000;
 
-        }else if (planetaSeleccionado == 3) {
+        } else if (planetaSeleccionado == 3) {
             mensaje = """
 
                     SELECCIONASTE MARTE, AQUI TENEMOS INFORMACION DEL PLANETA AL QUE VAS A VIAJAR:
@@ -118,10 +208,11 @@ public class simulador {
 
                     * Exploración activa: Actualmente, Marte es el planeta más visitado por robots, como los rovers Perseverance y Curiosity, que buscan signos de vida pasada.
                     """;
-            
-        }else if(planetaSeleccionado == 4){
+            distanciaPlaneta = 225000000;
+
+        } else if (planetaSeleccionado == 4) {
             mensaje = """
-                    
+
                     SELECCIONASTE JUPITER, AQUI TENEMOS INFORMACION DEL PLANETA AL QUE VAS A VIAJAR:
 
                     La distancia entre la Tierra y Júpiter varía considerablemente debido a las órbitas elípticas de ambos planetas alrededor del Sol.
@@ -137,14 +228,16 @@ public class simulador {
 
                     * Magnetosfera inmensa: Tiene el campo magnético más fuerte de cualquier planeta, abarcando millones de kilómetros en el espacio.
                     """;
-        }else if (planetaSeleccionado == 5) {
+            distanciaPlaneta = 778000000;
+
+        } else if (planetaSeleccionado == 5) {
             mensaje = """
 
                     SELECCIONASTE SATURNO, AQUI TENEMOS INFORMACION DEL PLANETA AL QUE VAS A VIAJAR:
 
                     La distancia entre la Tierra y Saturno varía significativamente debido a las órbitas elípticas de ambos planetas alrededor del Sol.
                     En promedio, la distancia es de aproximadamente 1.4 mil millones de kilómetros (870 millones de millas).
-                    
+
                     * Anillos famosos: Sus anillos son los más visibles y extensos del sistema solar, con un diámetro de unos 282,000 km, pero son extremadamente delgados.
 
                     * Numerosas lunas: Tiene 146 lunas conocidas, siendo Titán la más grande y una de las pocas lunas en el sistema solar con atmósfera.
@@ -155,14 +248,16 @@ public class simulador {
 
                     * Corto día, largo año: Un día en Saturno dura solo 10.7 horas, pero tarda 29.5 años terrestres en completar una órbita alrededor del Sol.
                     """;
-        }else if (planetaSeleccionado == 6) {
+            distanciaPlaneta = 1400000000;
+
+        } else if (planetaSeleccionado == 6) {
             mensaje = """
-                    
+
                     SELECCIONASTE URANO, AQUI TENEMOS INFORMACION DEL PLANETA AL QUE VAS A VIAJAR:
 
                     La distancia entre la Tierra y Urano varía considerablemente debido a las órbitas elípticas de ambos planetas alrededor del Sol.
                     En promedio, la distancia es de aproximadamente 2.87 mil millones de kilómetros (1.78 mil millones de millas).
-                    
+
                     * Rotación "de lado": Su inclinación extrema hace que parezca rodar alrededor del Sol, con estaciones de hasta 42 años terrestres de luz o oscuridad en sus polos.
 
                     * Vientos rápidos: Tiene vientos que alcanzan velocidades de 900 km/h, especialmente en su atmósfera inferior.
@@ -173,14 +268,16 @@ public class simulador {
 
                     * 27 lunas: Sus lunas tienen nombres únicos, basados en personajes de obras de Shakespeare y Alexander Pope, como Titania y Oberón.
                     """;
-        }else if (planetaSeleccionado == 7) {
+            distanciaPlaneta = 2870000000l;
+
+        } else if (planetaSeleccionado == 7) {
             mensaje = """
 
                     SELECCIONASTE NEPTUNO, AQUI TENEMOS INFORMACION DEL PLANETA AL QUE VAS A VIAJAR:
 
                     La distancia entre la Tierra y Neptuno varía ampliamente debido a las órbitas elípticas de ambos planetas alrededor del Sol.
                     En promedio, la distancia es de aproximadamente 4.3 mil millones de kilómetros (2.7 mil millones de millas).
-                    
+
                     * Vientos más rápidos: Los vientos en Neptuno pueden alcanzar velocidades de hasta 2,100 km/h.
 
                     * Gran Mancha Oscura: Similar a la Gran Mancha Roja de Júpiter, Neptuno tiene una tormenta gigante que se desplaza por su atmósfera.
@@ -191,10 +288,13 @@ public class simulador {
 
                     * Lento pero constante: Neptuno tarda 165 años terrestres en completar una órbita alrededor del Sol, pero su día dura solo 16 horas.
                     """;
-        }else {
+            distanciaPlaneta = 4300000000l;
+
+        } else {
             System.out.println("Opcion incorrecta, escoge uno de los planetas listados.");
         }
 
         System.out.println(mensaje);
+        return distanciaPlaneta;
     }
 }
