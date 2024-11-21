@@ -5,7 +5,7 @@ public class simulador {
     public static void startGame() {
         var entrada = new Scanner(System.in);
         String listaPlanetas[] = {"Mercurio", "Venus", "Marte", "Jupiter", "saturno", "Urano", "neptuno"};
-        String listaNaves[] = {"Falcon00", "Falcon002", "Falcon003", "Falcon004", "Falcon005"};
+        String listaNaves[] = {"Falcon001", "Falcon002", "Falcon003", "Falcon004"};
         boolean exit = false;
         int menuPrincipal, menuNaves;
 
@@ -54,9 +54,9 @@ public class simulador {
                                 int salidaNave;
 
                                 do {
-                                    System.out.printf("%nSeleccione el planeta al que desea viajar: %n%n");
+                                    System.out.printf("%nSeleccione la nave con la que desea viajar: %n%n");
                                     for (int i = 0; i < listaNaves.length; i++) {
-                                        System.out.printf("%s. %s%n", i + 1, listaNaves[i]);
+                                        System.out.printf("%s. %s%n%n", i+1, listaNaves[i]);
                                     }
                                     var naveSeleccionado = entrada.nextInt();
                                     mostrarInfoNave(naveSeleccionado);
@@ -102,7 +102,7 @@ public class simulador {
         entrada.close();
     }
 
-    private static void mostrarInfoNave(int naveSeleccionado) {
+    private static double mostrarInfoNave(int naveSeleccionado) {
         double velocidadNave = 0;
         String mensaje = ""; 
 
@@ -114,6 +114,8 @@ public class simulador {
                     Especialidad: Carga de pasajeros
                     Capacidad de carga: 10 personas
                     Velocidad Maxima: 1.900.000 km/hora
+                    Tanques de oxigeno: 15
+                    Combustible maximo: 100 galones
 
                     """;
             velocidadNave = 1900000;
@@ -125,9 +127,11 @@ public class simulador {
                     Especialidad: Velocidad Ultra
                     Capacidad de carga: 5 personas
                     Velocidad Maxima: 3.500.000 km/hora
+                    Tanques de oxigeno: 10
+                    Combustible maximo: 50 galones
 
                     """;
-            velocidadNave = 1900000;
+            velocidadNave = 3500000;
         }else if(naveSeleccionado == 3) {
             mensaje = """
                                     Información de la Nave seleccionada
@@ -135,12 +139,28 @@ public class simulador {
                     Nombre: Falcon003
                     Especialidad: Carga Mixta
                     Capacidad de carga: 7 personas
-                    Velocidad Maxima: 1.900.000 km/hora
+                    Velocidad Maxima: 2.700.000 km/hora
+                    Tanques de oxigeno: 12
+                    Combustible maximo: 70 galones
 
                     """;
-            velocidadNave = 1900000;
-        }
+            velocidadNave = 2700000;
+        }else if(naveSeleccionado == 4) {
+            mensaje = """
+                                    Información de la Nave seleccionada
 
+                    Nombre: Falcon004
+                    Especialidad: Reserva de oxigeno
+                    Capacidad de carga: 8 personas
+                    Velocidad Maxima: 3.000.000 km/hora
+                    Tanques de oxigeno: 20
+                    Combustible maximo: 60 galones
+
+                    """;
+            velocidadNave = 2700000;
+        }
+        System.out.println(mensaje);
+        return velocidadNave;
     }
 
     private static double mostrarInfoPlaneta(int planetaSeleccionado) {
