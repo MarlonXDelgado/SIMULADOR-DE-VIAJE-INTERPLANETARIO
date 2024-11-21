@@ -1,62 +1,107 @@
-import java.util.Scanner;
 
-public class simulador {
+import java.util.Random;
+import java.util.Scanner;
+public class simulador{
+
+    public static void main(String[] args) {
+        startGame();
+    }
 
     public static void startGame() {
         var entrada = new Scanner(System.in);
         String listaPlanetas[] = { "Mercurio", "Venus", "Marte", "Jupiter", "saturno", "Urano", "neptuno" };
         String listaNaves[] = { "Bronce", "Plata", "Oro", "Diamante", "Rubi" };
-        boolean exit = false;
+        int[] distancias = { 91, 41, 225, 778, 1400, 2870, 4300 };
+
+        boolean exit =false;
         int menuPrincipal, menuNaves;
 
-        do {
-            System.out.printf("%n%n====SIMULADOR DE VIAJE INTERPLANETARIO=====%n%n");
-            System.out.println("1. Seleccion de planetas de destino");
-            System.out.println("2. Seleccion de nave espacial");
-            System.out.println("3. Iniciar simulacion del viaje");
-            System.out.printf("4. Salir%n%n");
+        String planetaSeleccionado = null;
+        int distanciaSeleccionada = 0;
+        String naveSeleccionada = null;
+        int velocidadNave = 0;
 
-            menuPrincipal = entrada.nextInt();
-
-            switch (menuPrincipal) {
-                case 1:
-                boolean exitPlaneta = false;
-                int salidaPlaneta;
-                    
-                    do {
-                        System.out.printf("%nSeleccione el planeta al que desea viajar: %n%n");
-                        for (int i = 0; i < listaPlanetas.length; i++) {
-                            System.out.printf("%s. %s%n", i + 1, listaPlanetas[i]);
+            do {
+                System.out.printf("%n%n====SIMULADOR DE VIAJE INTERPLANETARIO=====%n%n");
+                System.out.println("1. Seleccion de planetas de destino");
+                System.out.println("2. Seleccion de nave espacial");
+                System.out.println("3. Iniciar simulacion del viaje");
+                System.out.printf("4. Salir%n%n");
+    
+                menuPrincipal = solicitarEntero(entrada, "Seleccione una opción del menú (1-4): ");
+    
+                switch (menuPrincipal) {
+                    case 1:
+                        boolean exitPlaneta = false;
+                        do {
+                            System.out.printf("%nSeleccione el planeta al que desea viajar: %n%n");
+                            for (int i = 0; i < listaPlanetas.length; i++) {
+                                System.out.printf("%s. %s%n", i + 1, listaPlanetas[i]);
+                            }
+    
+                            int seleccionPlaneta = solicitarEntero(entrada, "Seleccione un planeta (1-7): ");
+    
+                            if (seleccionPlaneta < 1 || seleccionPlaneta > listaPlanetas.length) {
+                                System.out.println("Selección inválida. Intente de nuevo.");
+                                continue;
+                            }
+    
+                            planetaSeleccionado = listaPlanetas[seleccionPlaneta - 1];
+                            distanciaSeleccionada = distancias[seleccionPlaneta - 1];
+    
+                            mostrarInfoPlaneta(seleccionPlaneta);
+                            int confirmar = solicitarEntero(entrada, "¿Está seguro que quiere viajar al planeta seleccionado? (1. Sí / 2. No): ");
+                            exitPlaneta = (confirmar == 1);
+    
+                        } while (!exitPlaneta);
+    
+                        break;
+    
+                    case 2:
+                        boolean exitNave = false;
+                        do {
+                            System.out.printf("%nSeleccione la nave con la que desea viajar: %n%n");
+                            for (int i = 0; i < listaNaves.length; i++) {
+                                System.out.printf("%s. %s%n", i + 1, listaNaves[i]);
+                            }
+    
+                            menuNaves = solicitarEntero(entrada, "Seleccione una nave (1-5): ");
+    
+                            if (menuNaves < 1 || menuNaves > listaNaves.length) {
+                                System.out.println("Selección inválida. Intente de nuevo.");
+                                continue;
+                            }
+    
+                            naveSeleccionada = listaNaves[menuNaves - 1];
+                            velocidadNave = 50000 + (menuNaves - 1) * 10000; 
+                            System.out.printf("Ha seleccionado la nave: %s con velocidad: %d km/h%n", naveSeleccionada, velocidadNave);
+                            exitNave = true;
+    
+                        } while (!exitNave);
+    
+                        break;
+    
+                    case 3:
+                        if (planetaSeleccionado == null || naveSeleccionada == null) {
+                            System.out.println("Debe seleccionar un planeta y una nave antes de iniciar la simulación.");
+                        } else {
+                            simularViaje(planetaSeleccionado, distanciaSeleccionada, velocidadNave);
                         }
-                        var planetaSeleccionado = entrada.nextInt();
-                        mostrarInfoPlaneta(planetaSeleccionado);
-                        System.out.printf("%n¿Esta seguro que quiere viajar al planeta seleccionado?%n%n1. Si%n2. No%n%n");
-                        salidaPlaneta = entrada.nextInt();
-                        exitPlaneta = (salidaPlaneta == 1) ? exitPlaneta = true : exitPlaneta;  
-                    } while (!exitPlaneta);
-
-                    break;
-                case 2:
-
-                    break;
-                case 3:
-
-                    break;
-
-                case 4:
-                    System.out.printf("%nHasta pronto!!!");
-                    exit = true;
-                    break;
-
-                default:
-                    System.out.printf("%nOpcion incorrecta, por favor selecciona una opcion valida.%n");
-                    break;
-            }
-
-        } while (!exit);
-        entrada.close();
-    }
-
+                        break;
+    
+                    case 4:
+                        System.out.printf("%nHasta pronto!!!");
+                        exit = true;
+                        break;
+    
+                    default:
+                        System.out.printf("%nOpción incorrecta, por favor selecciona una opción válida.%n");
+                        break;
+                }
+    
+            } while (!exit);
+            entrada.close();
+         }
     private static void mostrarInfoPlaneta(int planetaSeleccionado) {
         String mensaje = "";
         if (planetaSeleccionado == 1) {
@@ -195,6 +240,73 @@ public class simulador {
             System.out.println("Opcion incorrecta, escoge uno de los planetas listados.");
         }
 
-        System.out.println(mensaje);
+        System.out.println(mensaje);  
     }
+
+    private static void simularViaje(String planeta, int distancia, int velocidad) {
+        Random random = new Random();
+        int progreso = 0;
+        int tiempoTotalHoras = distancia * 1000000 / velocidad; 
+        int tiempoTranscurrido = 0;
+
+        System.out.printf("%nIniciando viaje hacia %s...%n", planeta);
+        System.out.printf("Distancia: %d millones de km%n", distancia);
+        System.out.printf("Velocidad: %d km/h%n", velocidad);
+        System.out.printf("Tiempo estimado: %d horas%n", tiempoTotalHoras);
+
+        while (progreso < 100) {
+            try {
+                Thread.sleep(500); 
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            progreso += 10;
+            tiempoTranscurrido += tiempoTotalHoras / 10;
+
+            System.out.print("Progreso del viaje: " + progreso + "% ");
+            System.out.print("[");
+            for (int i = 0; i < progreso / 10; i++) {
+                System.out.print("-");
+            }
+            for (int i = progreso / 10; i < 10; i++) {
+                System.out.print(" ");
+            }
+            System.out.println("]");
+
+            System.out.printf("Tiempo transcurrido: %d horas de %d%n", tiempoTranscurrido, tiempoTotalHoras);
+
+            if (random.nextInt(10) < 2) {
+                String evento = switch (random.nextInt(3)) {
+                    case 0 -> "¡Alerta! Asteroides detectados.";
+                    case 1 -> "¡Falla en el sistema! Reparando...";
+                    case 2 -> "¡Desvío inesperado! Calculando nueva ruta...";
+                    default -> "";
+                };
+                System.out.println(evento);
+            }
+        }
+
+        System.out.printf("%n¡Has llegado a %s!%n", planeta);
+    }
+
+    private static int solicitarEntero(Scanner entrada, String mensaje) {
+        int numero = -1;
+        boolean valido = false;
+
+        do {
+            System.out.print(mensaje);
+            if (entrada.hasNextInt()) {
+                numero = entrada.nextInt();
+                valido = true;
+            } else {
+                System.out.println("Entrada inválida. Por favor, ingrese un número entero.");
+                entrada.next(); 
+            }
+        } while (!valido);
+
+        return numero;
+    
+
+}
 }
