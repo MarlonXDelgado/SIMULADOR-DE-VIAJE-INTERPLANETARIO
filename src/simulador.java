@@ -4,10 +4,10 @@ public class simulador {
 
     public static void startGame() {
         var entrada = new Scanner(System.in);
-        String listaPlanetas[] = {"Mercurio", "Venus", "Marte", "Jupiter", "saturno", "Urano", "neptuno"};
-        String listaNaves[] = {"Falcon001", "Falcon002", "Falcon003", "Falcon004"};
+        String listaPlanetas[] = { "Mercurio", "Venus", "Marte", "Jupiter", "saturno", "Urano", "neptuno" };
+        String listaNaves[] = { "Falcon001", "Falcon002", "Falcon003", "Falcon004" };
         boolean exit = false;
-        int menuPrincipal, menuNaves;
+        int menuPrincipal, menuNaves, pasajeros, oxigeno, combustible;
 
         do {
             System.out.printf("%n%n====SIMULADOR DE VIAJE INTERPLANETARIO=====%n%n");
@@ -56,7 +56,7 @@ public class simulador {
                                 do {
                                     System.out.printf("%nSeleccione la nave con la que desea viajar: %n%n");
                                     for (int i = 0; i < listaNaves.length; i++) {
-                                        System.out.printf("%s. %s%n%n", i+1, listaNaves[i]);
+                                        System.out.printf("%s. %s%n%n", i + 1, listaNaves[i]);
                                     }
                                     var naveSeleccionado = entrada.nextInt();
                                     mostrarInfoNave(naveSeleccionado);
@@ -68,7 +68,18 @@ public class simulador {
 
                                 break;
                             case 2:
-
+                                System.out.printf("%n%nIngrese la cantidad de pasajeros que van a viajar: %n%n");
+                                pasajeros = entrada.nextInt();
+                                boolean exitPasajeros = false;
+                                do {
+                                    if (pasajeros <= 0) {
+                                        System.out.printf("Ingrese al menos 1 pasajero para el viaje: %n%n");
+                                        pasajeros = entrada.nextInt();
+                                    } else {
+                                        System.out.printf("La cantidad de pasajeros es: %s%n%n", pasajeros);
+                                        exitPasajeros = true;
+                                    }
+                                } while (!exitPasajeros);
                                 break;
                             case 3:
 
@@ -104,7 +115,7 @@ public class simulador {
 
     private static double mostrarInfoNave(int naveSeleccionado) {
         double velocidadNave = 0;
-        String mensaje = ""; 
+        String mensaje = "";
 
         if (naveSeleccionado == 1) {
             mensaje = """
@@ -119,7 +130,7 @@ public class simulador {
 
                     """;
             velocidadNave = 1900000;
-        }else if (naveSeleccionado == 2) {
+        } else if (naveSeleccionado == 2) {
             mensaje = """
                                     Información de la Nave seleccionada
 
@@ -132,7 +143,7 @@ public class simulador {
 
                     """;
             velocidadNave = 3500000;
-        }else if(naveSeleccionado == 3) {
+        } else if (naveSeleccionado == 3) {
             mensaje = """
                                     Información de la Nave seleccionada
 
@@ -145,7 +156,7 @@ public class simulador {
 
                     """;
             velocidadNave = 2700000;
-        }else if(naveSeleccionado == 4) {
+        } else if (naveSeleccionado == 4) {
             mensaje = """
                                     Información de la Nave seleccionada
 
