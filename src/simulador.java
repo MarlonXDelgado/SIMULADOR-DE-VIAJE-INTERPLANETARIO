@@ -132,6 +132,7 @@ public class simulador {
         } while (!exit);
         entrada.close();
     }
+//Este metodo nos permite ver la duracion aproximada en dias de cuanto puede durar nuestro viaje, se llama despues de validar si ya hay una nave seleccionada y un planeta seleccionado.
 private static double tripDuration(double velocidadNave, double distanciaPlaneta){
     double traveltime;
     traveltime = distanciaPlaneta/velocidadNave;
