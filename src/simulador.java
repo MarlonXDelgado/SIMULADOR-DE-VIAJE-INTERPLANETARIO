@@ -29,7 +29,7 @@ public class simulador {
                             System.out.printf("%s. %s%n", i + 1, listaPlanetas[i]);
                         }
                         var planetaSeleccionado = entrada.nextInt();
-                        mostrarInfoPlaneta(planetaSeleccionado);
+                        showInfoPlaneta(planetaSeleccionado);
                         System.out.printf(
                                 "%n¿Esta seguro que quiere viajar al planeta seleccionado?%n%n1. Si%n2. No%n%n");
                         salidaPlaneta = entrada.nextInt();
@@ -59,7 +59,7 @@ public class simulador {
                                         System.out.printf("%s. %s%n%n", i + 1, listaNaves[i]);
                                     }
                                     var naveSeleccionado = entrada.nextInt();
-                                    mostrarInfoNave(naveSeleccionado);
+                                    showInfoNave(naveSeleccionado);
                                     System.out.printf(
                                             "%n¿Esta seguro que desea usar la nave seleccionada?%n%n1. Si%n2. No%n%n");
                                     salidaNave = entrada.nextInt();
@@ -73,8 +73,7 @@ public class simulador {
                                 boolean exitPasajeros = false;
                                 do {
                                     if (pasajeros <= 0) {
-                                        System.out.printf("Ingrese al menos 1 pasajero para el viaje: %n%n");
-                                        pasajeros = entrada.nextInt();
+                                        System.err.printf("Ingrese al menos 1 pasajero para el viaje: %n%n");
                                     } else {
                                         System.out.printf("La cantidad de pasajeros es: %s%n%n", pasajeros);
                                         exitPasajeros = true;
@@ -82,13 +81,21 @@ public class simulador {
                                 } while (!exitPasajeros);
                                 break;
                             case 3:
+                                boolean exitRecursos = false;
+                                do {
+                                    System.out.printf("%n%nIngrese la cantidad de galones de combustible para el viaje: %n%n");
+                                    combustible = entrada.nextInt();
+                                    System.out.printf("%n%nIngrese la cantidad de tanques de oxigeno para el viaje: %n%n");
+                                    oxigeno = entrada.nextInt();
+                                    manageResources(combustible, oxigeno);
+                                } while (!exitRecursos);
 
                                 break;
                             case 4:
 
                                 break;
                             default:
-                                System.out.printf("%nOpcion incorrecta, por favor selecciona una opcion valida.%n");
+                                System.err.printf("%nOpcion incorrecta, por favor selecciona una opcion valida.%n");
                                 break;
                         }
 
@@ -105,15 +112,24 @@ public class simulador {
                     break;
 
                 default:
-                    System.out.printf("%nOpcion incorrecta, por favor selecciona una opcion valida.%n");
+                    System.err.printf("%nOpcion incorrecta, por favor selecciona una opcion valida.%n");
                     break;
             }
 
         } while (!exit);
         entrada.close();
     }
+    private static boolean manageResources (int combustible, int oxigeno){
+        if (combustible <= 0 || oxigeno <= 0) {
+            System.err.printf("%nOpcion incorrecta, por favor selecciona una opcion valida.%n");
+            return false;
+        }else{
+            System.out.printf("%nRecursos embarcados y listos para el viaje...");
+            return true;
+        }
+    }
 
-    private static double mostrarInfoNave(int naveSeleccionado) {
+    private static double showInfoNave(int naveSeleccionado) {
         double velocidadNave = 0;
         String mensaje = "";
 
@@ -124,7 +140,7 @@ public class simulador {
                     Nombre: Falcon001
                     Especialidad: Carga de pasajeros
                     Capacidad de carga: 10 personas
-                    Velocidad Maxima: 1.900.000 km/hora
+                    Velocidad Maxima: 1.900.000 km/dia
                     Tanques de oxigeno: 15
                     Combustible maximo: 100 galones
 
@@ -137,7 +153,7 @@ public class simulador {
                     Nombre: Falcon002
                     Especialidad: Velocidad Ultra
                     Capacidad de carga: 5 personas
-                    Velocidad Maxima: 3.500.000 km/hora
+                    Velocidad Maxima: 3.500.000 km/dia
                     Tanques de oxigeno: 10
                     Combustible maximo: 50 galones
 
@@ -150,7 +166,7 @@ public class simulador {
                     Nombre: Falcon003
                     Especialidad: Carga Mixta
                     Capacidad de carga: 7 personas
-                    Velocidad Maxima: 2.700.000 km/hora
+                    Velocidad Maxima: 2.700.000 km/dia
                     Tanques de oxigeno: 12
                     Combustible maximo: 70 galones
 
@@ -163,18 +179,18 @@ public class simulador {
                     Nombre: Falcon004
                     Especialidad: Reserva de oxigeno
                     Capacidad de carga: 8 personas
-                    Velocidad Maxima: 3.000.000 km/hora
+                    Velocidad Maxima: 3.000.000 km/dia
                     Tanques de oxigeno: 20
                     Combustible maximo: 60 galones
 
                     """;
-            velocidadNave = 2700000;
+            velocidadNave = 3000000;
         }
         System.out.println(mensaje);
         return velocidadNave;
     }
 
-    private static double mostrarInfoPlaneta(int planetaSeleccionado) {
+    private static double showInfoPlaneta(int planetaSeleccionado) {
         String mensaje = "";
         double distanciaPlaneta = 0;
         if (planetaSeleccionado == 1) {
@@ -322,7 +338,7 @@ public class simulador {
             distanciaPlaneta = 4300000000l;
 
         } else {
-            System.out.println("Opcion incorrecta, escoge uno de los planetas listados.");
+            System.err.println("Opcion incorrecta, escoge uno de los planetas listados.");
         }
 
         System.out.println(mensaje);
