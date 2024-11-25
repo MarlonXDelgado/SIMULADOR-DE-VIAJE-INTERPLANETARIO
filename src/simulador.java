@@ -7,6 +7,7 @@ public class simulador {
         String listaPlanetas[] = { "Mercurio", "Venus", "Marte", "Jupiter", "saturno", "Urano", "neptuno" };
         String listaNaves[] = { "Falcon001", "Falcon002", "Falcon003", "Falcon004" };
         boolean exit = false;
+        double velocidadNave = 0, distanciaPlaneta = 0;
         int menuPrincipal, menuNaves, pasajeros, oxigeno, combustible;
 
         do {
@@ -29,7 +30,7 @@ public class simulador {
                             System.out.printf("%s. %s%n", i + 1, listaPlanetas[i]);
                         }
                         var planetaSeleccionado = entrada.nextInt();
-                        showInfoPlaneta(planetaSeleccionado);
+                        distanciaPlaneta = showInfoPlaneta(planetaSeleccionado);
                         System.out.printf(
                                 "%n¿Esta seguro que quiere viajar al planeta seleccionado?%n%n1. Si%n2. No%n%n");
                         salidaPlaneta = entrada.nextInt();
@@ -59,11 +60,13 @@ public class simulador {
                                         System.out.printf("%s. %s%n%n", i + 1, listaNaves[i]);
                                     }
                                     var naveSeleccionado = entrada.nextInt();
-                                    showInfoNave(naveSeleccionado);
-                                    System.out.printf(
-                                            "%n¿Esta seguro que desea usar la nave seleccionada?%n%n1. Si%n2. No%n%n");
-                                    salidaNave = entrada.nextInt();
-                                    exitNave = (salidaNave == 1) ? exitNave = true : exitNave;
+                                    velocidadNave = showInfoNave(naveSeleccionado);
+                                    if (velocidadNave != 0){
+                                        System.out.printf("%n¿Esta seguro que desea usar la nave seleccionada?%n%n1. Si%n2. No%n%n");
+                                        salidaNave = entrada.nextInt();
+                                        exitNave = (salidaNave == 1) ? exitNave = true : exitNave;
+                                    }
+                                    
                                 } while (!exitNave);
 
                                 break;
@@ -82,14 +85,18 @@ public class simulador {
                                 break;
                             case 3:
                                 boolean exitRecursos = false;
-                                do {
-                                    System.out.printf("%n%nIngrese la cantidad de galones de combustible para el viaje: %n%n");
-                                    combustible = entrada.nextInt();
-                                    System.out.printf("%n%nIngrese la cantidad de tanques de oxigeno para el viaje: %n%n");
-                                    oxigeno = entrada.nextInt();
-                                    manageResources(combustible, oxigeno);
-                                } while (!exitRecursos);
-
+                                if (velocidadNave == 0) {
+                                    System.err.printf("%nPrimero debe de seleccionar una nave...%n");
+                                } else{
+                                    do {
+                                        System.out.printf("%n%nIngrese la cantidad de galones de combustible para el viaje: %n%n");
+                                        combustible = entrada.nextInt();
+                                        System.out.printf("%n%nIngrese la cantidad de tanques de oxigeno para el viaje: %n%n");
+                                        oxigeno = entrada.nextInt();
+                                        manageResources(combustible, oxigeno);
+                                    } while (!exitRecursos);
+                                }
+                                
                                 break;
                             case 4:
 
@@ -121,7 +128,7 @@ public class simulador {
     }
     private static boolean manageResources (int combustible, int oxigeno){
         if (combustible <= 0 || oxigeno <= 0) {
-            System.err.printf("%nOpcion incorrecta, por favor selecciona una opcion valida.%n");
+            System.err.printf("%nCantidad minima de tanques de oxigeno a ingresar: 1 tanque.%nCantidad minima de galones de combustible a ingresar: 1%n%n");
             return false;
         }else{
             System.out.printf("%nRecursos embarcados y listos para el viaje...");
@@ -185,6 +192,8 @@ public class simulador {
 
                     """;
             velocidadNave = 3000000;
+        }else{
+            mensaje = "Opcion incorrecta, por favor selecciona una opcion valida"; 
         }
         System.out.println(mensaje);
         return velocidadNave;
@@ -192,7 +201,7 @@ public class simulador {
 
     private static double showInfoPlaneta(int planetaSeleccionado) {
         String mensaje = "";
-        double distanciaPlaneta = 0;
+        var distanciaPlaneta = 0l;
         if (planetaSeleccionado == 1) {
             mensaje = """
 
