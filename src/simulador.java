@@ -109,25 +109,36 @@ public class simulador {
                                 }
                                 break;
                             case 3:
-                                // Este codigo comprueba si ya se ha escogido una nave, de ser verdadero entra a un bucle que pide al usuario 
-                                // que ingrese la cantidad de combustible y oxígeno necesarios para un viaje; mediante el metodo
-                                // manageResources valida si se ingresaron correctamente los recursos y se rompe el ciclo de ser verdadero.
-                                boolean exitRecursos = false;
-                                if (velocidadNave == 0) {
-                                    System.err.printf("%nPrimero debe de seleccionar una nave...%n");
-                                } else {
-                                    do {
-                                        System.out.printf(
-                                                "%n%nIngrese la cantidad de galones de combustible para el viaje: %n");
-                                        combustible = entrada.nextInt();
-                                        System.out.printf(
-                                                "%n%nIngrese la cantidad de tanques de oxigeno para el viaje: %n");
-                                        oxigeno = entrada.nextInt();
-                                        exitRecursos = manageResources(combustible, oxigeno);
-                                    } while (!exitRecursos);
-                                }
-
-                                break;
+                            // Este codigo comprueba si ya se ha escogido una nave, de ser verdadero entra a un bucle que pide al usuario 
+                            // que ingrese la cantidad de combustible y oxígeno necesarios para un viaje; mediante el metodo
+                            // manageResources valida si se ingresaron correctamente los recursos y se rompe el ciclo de ser verdadero.
+                            boolean exitRecursos = false;
+                            if (velocidadNave == 0) {
+                                System.err.printf("%nPrimero debe de seleccionar una nave...%n");
+                            } else {
+                                int[] capacidades = obtenerCapacidadMaximaCombustibleYOxigeno(velocidadNave);
+                                int maxCombustible = capacidades[0];
+                                int maxOxigeno = capacidades[1];
+                        
+                                do {
+                                    System.out.printf("%n%nIngrese la cantidad de galones de combustible para el viaje (máximo %d): %n", maxCombustible);
+                                    combustible = entrada.nextInt();
+                                    if (combustible > maxCombustible) {
+                                        System.err.printf("¡Error! La nave seleccionada solo puede llevar hasta %d galones de combustible.%n", maxCombustible);
+                                        continue;
+                                    }
+                        
+                                    System.out.printf("%n%nIngrese la cantidad de tanques de oxígeno para el viaje (máximo %d): %n", maxOxigeno);
+                                    oxigeno = entrada.nextInt();
+                                    if (oxigeno > maxOxigeno) {
+                                        System.err.printf("¡Error! La nave seleccionada solo puede llevar hasta %d tanques de oxígeno.%n", maxOxigeno);
+                                        continue;
+                                    }
+                        
+                                    exitRecursos = manageResources(combustible, oxigeno);
+                                } while (!exitRecursos);
+                            }
+                            break;
                             case 4:
                                 // Este codigo comprueba si ya se ha escogido una nave y un deestino, de ser verdadero
                                 // calcula e imprime la duración aproximada del viaje utilizando el método tripDuration,
@@ -302,6 +313,20 @@ public class simulador {
             return 0; // En caso de que no haya una nave seleccionada
         }
     }
+    private static int[] obtenerCapacidadMaximaCombustibleYOxigeno(double velocidadNave) {
+        if (velocidadNave == 1900000) { // Falcon001
+            return new int[] { 100, 15 }; // {combustibleMax, oxigenoMax}
+        } else if (velocidadNave == 3500000) { // Falcon002
+            return new int[] { 50, 10 };
+        } else if (velocidadNave == 2700000) { // Falcon003
+            return new int[] { 70, 12 };
+        } else if (velocidadNave == 3000000) { // Falcon004
+            return new int[] { 60, 20 };
+        } else {
+            return new int[] { 0, 0 }; // En caso de que no haya una nave seleccionada
+        }
+    }
+    
     
 
     /**
