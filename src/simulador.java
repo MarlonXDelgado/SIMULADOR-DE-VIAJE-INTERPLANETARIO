@@ -3,10 +3,6 @@ import java.util.Random;
 import java.util.Scanner;
 public class simulador{
 
-    public static void main(String[] args) {
-        startGame();
-    }
-
     public static void startGame() {
         var entrada = new Scanner(System.in);
         String listaPlanetas[] = { "Mercurio", "Venus", "Marte", "Jupiter", "saturno", "Urano", "neptuno" };
