@@ -133,6 +133,10 @@ public class simulador {
                                 }
 
                                 break;
+                            case 5:
+                                   System.out.println("Regresando al menú principal...");
+                                   break; 
+
                             default:
                                 System.err.printf("%nOpcion incorrecta, por favor selecciona una opcion valida.%n");
                                 break;
