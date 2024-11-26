@@ -1,4 +1,5 @@
 
+import java.util.Random;
 import java.util.Scanner;
 
 public class simulador {
@@ -144,7 +145,7 @@ public class simulador {
                 if (distanciaPlaneta == 0 || velocidadNave == 0 || pasajeros == 0 || oxigeno == 0 || combustible == 0) {
                     System.err.printf("%nDebe completar la configuración del viaje antes de iniciar la simulación.%n");
                 } else {
-                    simularViaje(distanciaPlaneta, velocidadNave);
+                    simularViaje(distanciaPlaneta, velocidadNave,oxigeno,combustible);
                 }
                 break;
 
@@ -161,28 +162,55 @@ public class simulador {
         } while (!exit);
         entrada.close();
     }
-    private static void simularViaje(double distanciaPlaneta, double velocidadNave) {
-        double duracionDias = tripDuration(velocidadNave, distanciaPlaneta);
-        System.out.printf("%nSimulando viaje... Duración estimada: %.2f días.%n", duracionDias);
+    private static void simularViaje(double distancia, double velocidad, int oxigeno, int combustible) {
+        Random random = new Random();
+        double progreso = 0;
+        double tiempoTotal = distancia / velocidad;
+        double tiempoTranscurrido = 0;
 
-        for (int progreso = 0; progreso <= 100; progreso += 10) {
+        System.out.printf("%nIniciando viaje...%nDistancia: %.2f km%nVelocidad: %.2f km/h%nTiempo estimado: %.2f horas%n",
+                distancia, velocidad, tiempoTotal);
+
+        while (progreso < 100 && oxigeno > 0 && combustible > 0) {
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            System.out.printf("Progreso del viaje: %d%%%n", progreso);
-            System.out.print("[");
+
+            progreso += 10;
+            tiempoTranscurrido += tiempoTotal / 10;
+            oxigeno -= 1;
+            combustible -= 10;
+
+            System.out.printf("Progreso: %.0f%% [", progreso);
             for (int i = 0; i < progreso / 10; i++) {
                 System.out.print("-");
             }
-            for (int i = progreso / 10; i < 10; i++) {
+            for (int i = (int) progreso / 10; i < 10; i++) {
                 System.out.print(" ");
             }
             System.out.println("]");
+
+            System.out.printf("Oxígeno restante: %d | Combustible restante: %d%n", oxigeno, combustible);
+
+            if (random.nextInt(10) < 2) {
+                String evento = switch (random.nextInt(3)) {
+                    case 0 -> "¡Alerta! Asteroides detectados.";
+                    case 1 -> "¡Falla técnica! Reparando sistemas...";
+                    case 2 -> "¡Desvío inesperado! Recalculando ruta...";
+                    default -> "";
+                };
+                System.out.println(evento);
+                tiempoTranscurrido += 0.5;
+            }
         }
 
-        System.out.printf("%n¡Viaje completado!%n");
+        if (oxigeno <= 0 || combustible <= 0) {
+            System.out.println("El viaje no pudo completarse debido a recursos insuficientes.");
+        } else {
+            System.out.printf("%n¡Has llegado a tu destino! Tiempo total: %.2f horas%n", tiempoTranscurrido);
+        }
     }
    
     /**
