@@ -1,105 +1,296 @@
 
-import java.util.Random;
 import java.util.Scanner;
-public class simulador{
+
+public class simulador {
 
     public static void startGame() {
         var entrada = new Scanner(System.in);
         String listaPlanetas[] = { "Mercurio", "Venus", "Marte", "Jupiter", "saturno", "Urano", "neptuno" };
-        String listaNaves[] = { "Bronce", "Plata", "Oro", "Diamante", "Rubi" };
-        int[] distancias = { 91, 41, 225, 778, 1400, 2870, 4300 };
+        String listaNaves[] = { "Falcon001", "Falcon002", "Falcon003", "Falcon004" };
+        boolean exit = false;
+        double velocidadNave = 0, distanciaPlaneta = 0, traveltime = 0;
+        int menuPrincipal, menuNaves, pasajeros = 0, oxigeno = 0, combustible = 0;
 
-        boolean exit =false;
-        int menuPrincipal, menuNaves;
+        do {
+            //Menu principal del juego que muestra las opciones disponibles del simulador del viaje interplanetario.
+            System.out.printf("%n%n====SIMULADOR DE VIAJE INTERPLANETARIO=====%n%n");
+            System.out.println("1. Seleccion de planetas de destino");
+            System.out.println("2. Seleccion de nave espacial");
+            System.out.println("3. Iniciar simulacion del viaje");
+            System.out.printf("4. Salir%n%n");
 
-        String planetaSeleccionado = null;
-        int distanciaSeleccionada = 0;
-        String naveSeleccionada = null;
-        int velocidadNave = 0;
+            menuPrincipal = entrada.nextInt();
 
-            do {
-                System.out.printf("%n%n====SIMULADOR DE VIAJE INTERPLANETARIO=====%n%n");
-                System.out.println("1. Seleccion de planetas de destino");
-                System.out.println("2. Seleccion de nave espacial");
-                System.out.println("3. Iniciar simulacion del viaje");
-                System.out.printf("4. Salir%n%n");
-    
-                menuPrincipal = solicitarEntero(entrada, "Seleccione una opción del menú (1-4): ");
-    
-                switch (menuPrincipal) {
-                    case 1:
-                        boolean exitPlaneta = false;
-                        do {
-                            System.out.printf("%nSeleccione el planeta al que desea viajar: %n%n");
-                            for (int i = 0; i < listaPlanetas.length; i++) {
-                                System.out.printf("%s. %s%n", i + 1, listaPlanetas[i]);
-                            }
-    
-                            int seleccionPlaneta = solicitarEntero(entrada, "Seleccione un planeta (1-7): ");
-    
-                            if (seleccionPlaneta < 1 || seleccionPlaneta > listaPlanetas.length) {
-                                System.out.println("Selección inválida. Intente de nuevo.");
-                                continue;
-                            }
-    
-                            planetaSeleccionado = listaPlanetas[seleccionPlaneta - 1];
-                            distanciaSeleccionada = distancias[seleccionPlaneta - 1];
-    
-                            mostrarInfoPlaneta(seleccionPlaneta);
-                            int confirmar = solicitarEntero(entrada, "¿Está seguro que quiere viajar al planeta seleccionado? (1. Sí / 2. No): ");
-                            exitPlaneta = (confirmar == 1);
-    
-                        } while (!exitPlaneta);
-    
-                        break;
-    
-                    case 2:
-                        boolean exitNave = false;
-                        do {
-                            System.out.printf("%nSeleccione la nave con la que desea viajar: %n%n");
-                            for (int i = 0; i < listaNaves.length; i++) {
-                                System.out.printf("%s. %s%n", i + 1, listaNaves[i]);
-                            }
-    
-                            menuNaves = solicitarEntero(entrada, "Seleccione una nave (1-5): ");
-    
-                            if (menuNaves < 1 || menuNaves > listaNaves.length) {
-                                System.out.println("Selección inválida. Intente de nuevo.");
-                                continue;
-                            }
-    
-                            naveSeleccionada = listaNaves[menuNaves - 1];
-                            velocidadNave = 50000 + (menuNaves - 1) * 10000; 
-                            System.out.printf("Ha seleccionado la nave: %s con velocidad: %d km/h%n", naveSeleccionada, velocidadNave);
-                            exitNave = true;
-    
-                        } while (!exitNave);
-    
-                        break;
-    
-                    case 3:
-                        if (planetaSeleccionado == null || naveSeleccionada == null) {
-                            System.out.println("Debe seleccionar un planeta y una nave antes de iniciar la simulación.");
-                        } else {
-                            simularViaje(planetaSeleccionado, distanciaSeleccionada, velocidadNave);
+            switch (menuPrincipal) {
+                case 1:
+                    // Este código implementa un bucle que permite al usuario seleccionar un planeta al que viajar, mediante el metodo showInfoPlaneta.
+                    // muestra una lista de planetas, solicita al usuario que seleccione un planeta, muestra información sobre el planeta
+                    // seleccionado y pide al usuario que confirme su seleccion, el ciclo continúa hasta que el usuario confirma el planeta a viajar.
+
+                    boolean exitPlaneta = false;
+                    int salidaPlaneta;
+
+                    do {
+                        System.out.printf("%nSeleccione el planeta al que desea viajar: %n%n");
+                        for (int i = 0; i < listaPlanetas.length; i++) {
+                            System.out.printf("%s. %s%n", i + 1, listaPlanetas[i]);
                         }
-                        break;
-    
-                    case 4:
-                        System.out.printf("%nHasta pronto!!!");
-                        exit = true;
-                        break;
-    
-                    default:
-                        System.out.printf("%nOpción incorrecta, por favor selecciona una opción válida.%n");
-                        break;
+                        var planetaSeleccionado = entrada.nextInt();
+                        distanciaPlaneta = showInfoPlaneta(planetaSeleccionado);
+                        System.out.printf(
+                                "%n¿Esta seguro que quiere viajar al planeta seleccionado?%n%n1. Si%n2. No%n%n");
+                        salidaPlaneta = entrada.nextInt();
+                        exitPlaneta = (salidaPlaneta == 1) ? exitPlaneta = true : exitPlaneta;
+                    } while (!exitPlaneta);
+
+                    break;
+                case 2:
+                    //Menú que muestra las opciones disponibles para gestionar la nave, los pasajeros y sus recursos.
+                    do {
+                        System.out.printf("%n%n====GESTION DE LA NAVE ESPACIAL=====%n%n");
+                        System.out.println("1. Seleccionar una nave para el viaje");
+                        System.out.println("2. Ingresar la cantidad de pasajeros");
+                        System.out.println("3. Gestionar recursos de la nave");
+                        System.out.println("4. Calculo de la duración del viaje");
+                        System.out.printf("5. Salir al menu principal%n%n");
+
+                        menuNaves = entrada.nextInt();
+
+                        switch (menuNaves) {
+                            case 1:
+                                // Este codigo crea un bucle que permite al usuario seleccionar una nave para viajar. Mediante el metodo showInfoNave
+                                // muestra una lista de naves disponibles, solicita al usuario que seleccione una y muestra información sobre la nave, 
+                                // pide al usuario que confirme su seleccion. Si el usuario confirma, la variable `exitNave` se establece en verdadero, 
+                                // rompiendo el ciclo y regresando al usuario al menu principal.
+                                boolean exitNave = false;
+                                int salidaNave;
+
+                                do {
+                                    System.out.printf("%nSeleccione la nave con la que desea viajar: %n%n");
+                                    for (int i = 0; i < listaNaves.length; i++) {
+                                        System.out.printf("%s. %s%n%n", i + 1, listaNaves[i]);
+                                    }
+                                    var naveSeleccionado = entrada.nextInt();
+                                    velocidadNave = showInfoNave(naveSeleccionado);
+                                    if (velocidadNave != 0) {
+                                        System.out.printf(
+                                                "%n¿Esta seguro que desea usar la nave seleccionada?%n%n1. Si%n2. No%n%n");
+                                        salidaNave = entrada.nextInt();
+                                        exitNave = (salidaNave == 1) ? exitNave = true : exitNave;
+                                    }
+
+                                } while (!exitNave);
+
+                                break;
+                            case 2:
+                                // Este código solicita al usuario que ingrese la cantidad de pasajeros que viajarán,  
+                                // valida si la entrada es menor o igual a 0. Si es así, se muestra un mensaje de error pidiendo al usuario que ingrese al menos 1 pasajero.
+                                // si es mayor a 0, muestra el número de pasajeros ingresados, el ciclo continúa hasta que se proporciona una entrada válida.
+                                System.out.printf("%n%nIngrese la cantidad de pasajeros que van a viajar: %n%n");
+                                pasajeros = entrada.nextInt();
+                                boolean exitPasajeros = false;
+                                do {
+                                    if (pasajeros <= 0) {
+                                        System.err.printf("Ingrese al menos 1 pasajero para el viaje: %n%n");
+                                        break;
+                                    } else {
+                                        System.out.printf("La cantidad de pasajeros es: %s%n%n", pasajeros);
+                                        exitPasajeros = true;
+                                    }
+                                } while (!exitPasajeros);
+                                break;
+                            case 3:
+                                // Este codigo comprueba si ya se ha escogido una nave, de ser verdadero entra a un bucle que pide al usuario 
+                                // que ingrese la cantidad de combustible y oxígeno necesarios para un viaje; mediante el metodo
+                                // manageResources valida si se ingresaron correctamente los recursos y se rompe el ciclo de ser verdadero.
+                                boolean exitRecursos = false;
+                                if (velocidadNave == 0) {
+                                    System.err.printf("%nPrimero debe de seleccionar una nave...%n");
+                                } else {
+                                    do {
+                                        System.out.printf(
+                                                "%n%nIngrese la cantidad de galones de combustible para el viaje: %n");
+                                        combustible = entrada.nextInt();
+                                        System.out.printf(
+                                                "%n%nIngrese la cantidad de tanques de oxigeno para el viaje: %n");
+                                        oxigeno = entrada.nextInt();
+                                        exitRecursos = manageResources(combustible, oxigeno);
+                                    } while (!exitRecursos);
+                                }
+
+                                break;
+                            case 4:
+                                // Este codigo comprueba si ya se ha escogido una nave y un deestino, de ser verdadero
+                                // calcula e imprime la duración aproximada del viaje utilizando el método tripDuration,
+                                // generando validaciones de errores constantes hasta dar el resultado correcto.
+                                if (velocidadNave == 0 || distanciaPlaneta == 0) {
+                                    System.err.printf(
+                                            "%nPara calcular la duracion del viaje debe de elegir un planeta y escoger una nave...%n%n");
+                                } else {
+                                    System.out.printf("%nLa duracion del viaje seria aproximadamente de: %.2f dias.",
+                                            tripDuration(velocidadNave, distanciaPlaneta));
+                                }
+
+                                break;
+                            default:
+                                System.err.printf("%nOpcion incorrecta, por favor selecciona una opcion valida.%n");
+                                break;
+                        }
+
+                    } while (menuNaves != 5);
+
+                    break;
+                case 3:
+                if (distanciaPlaneta == 0 || velocidadNave == 0 || pasajeros == 0 || oxigeno == 0 || combustible == 0) {
+                    System.err.printf("%nDebe completar la configuración del viaje antes de iniciar la simulación.%n");
+                } else {
+                    simularViaje(distanciaPlaneta, velocidadNave);
                 }
-    
-            } while (!exit);
-            entrada.close();
-         }
-    private static void mostrarInfoPlaneta(int planetaSeleccionado) {
+                break;
+
+                case 4:
+                    System.out.printf("%nHasta pronto!!!");
+                    exit = true;
+                    break;
+
+                default:
+                    System.err.printf("%nOpcion incorrecta, por favor selecciona una opcion valida.%n");
+                    break;
+            }
+
+        } while (!exit);
+        entrada.close();
+    }
+    private static void simularViaje(double distanciaPlaneta, double velocidadNave) {
+        double duracionDias = tripDuration(velocidadNave, distanciaPlaneta);
+        System.out.printf("%nSimulando viaje... Duración estimada: %.2f días.%n", duracionDias);
+
+        for (int progreso = 0; progreso <= 100; progreso += 10) {
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.printf("Progreso del viaje: %d%%%n", progreso);
+            System.out.print("[");
+            for (int i = 0; i < progreso / 10; i++) {
+                System.out.print("-");
+            }
+            for (int i = progreso / 10; i < 10; i++) {
+                System.out.print(" ");
+            }
+            System.out.println("]");
+        }
+
+        System.out.printf("%n¡Viaje completado!%n");
+    }
+   
+    /**
+     * El metodo 'tripDuration'calcula la distancia en dias que demora el viaje desde la tierra hasta el planeta seleccionado.
+     * @param velocidadNave Representa la velocidad de la nave escogida para el viaje.
+     * @param distanciaPlaneta Representa la distancia del planeta escogido para el viaje.
+     * @return El método retorna un double con la duracion aproximada del viaje.
+     */
+    private static double tripDuration(double velocidadNave, double distanciaPlaneta) {
+        double traveltime;
+        traveltime = distanciaPlaneta / velocidadNave;
+        return traveltime;
+    }
+
+    /**
+     * El metodo 'manageResources' verifica si los recursos de oxigeno y combustible son suficientes.
+     * @param combustible Representa la cantidad de combustible en galones disponible para el viaje.
+     * @param oxigeno Representa la cantidad de anques de oxígeno idsponibles para el viaje.
+     * @return El método retorna un boolean que es verdadero si los recursos son los minimos y falso sino lo son.
+     */
+    private static boolean manageResources(int combustible, int oxigeno) {
+        if (combustible <= 0 || oxigeno <= 0) {
+            System.err.printf(
+                    "%nCantidad minima de tanques de oxigeno a ingresar: 1 tanque.%nCantidad minima de galones de combustible a ingresar: 1%n%n");
+            return false;
+        } else {
+            System.out.printf("%nRecursos embarcados y listos para el viaje...");
+            return true;
+        }
+    }
+
+    /**
+     * El metodo `showInfoNave` muestra la informacion de la nave seleccionada y retorna la velocidad máxima de la misma.
+     * @param naveSeleccionado Representa la nave espacial seleccionada.
+     * @return El método retorna un double con la velocidad de la nave escogida para el viaje.
+     */
+    private static double showInfoNave(int naveSeleccionado) {
+        double velocidadNave = 0;
         String mensaje = "";
+
+        if (naveSeleccionado == 1) {
+            mensaje = """
+                                    Información de la Nave seleccionada
+
+                    Nombre: Falcon001
+                    Especialidad: Carga de pasajeros
+                    Capacidad de carga: 10 personas
+                    Velocidad Maxima: 1.900.000 km/dia
+                    Tanques de oxigeno: 15
+                    Combustible maximo: 100 galones
+
+                    """;
+            velocidadNave = 1900000;
+        } else if (naveSeleccionado == 2) {
+            mensaje = """
+                                    Información de la Nave seleccionada
+
+                    Nombre: Falcon002
+                    Especialidad: Velocidad Ultra
+                    Capacidad de carga: 5 personas
+                    Velocidad Maxima: 3.500.000 km/dia
+                    Tanques de oxigeno: 10
+                    Combustible maximo: 50 galones
+
+                    """;
+            velocidadNave = 3500000;
+        } else if (naveSeleccionado == 3) {
+            mensaje = """
+                                    Información de la Nave seleccionada
+
+                    Nombre: Falcon003
+                    Especialidad: Carga Mixta
+                    Capacidad de carga: 7 personas
+                    Velocidad Maxima: 2.700.000 km/dia
+                    Tanques de oxigeno: 12
+                    Combustible maximo: 70 galones
+
+                    """;
+            velocidadNave = 2700000;
+        } else if (naveSeleccionado == 4) {
+            mensaje = """
+                                    Información de la Nave seleccionada
+
+                    Nombre: Falcon004
+                    Especialidad: Reserva de oxigeno
+                    Capacidad de carga: 8 personas
+                    Velocidad Maxima: 3.000.000 km/dia
+                    Tanques de oxigeno: 20
+                    Combustible maximo: 60 galones
+
+                    """;
+            velocidadNave = 3000000;
+        } else {
+            System.out.printf("%n%nOpcion incorrecta, por favor selecciona una opcion valida...");
+        }
+        System.out.println(mensaje);
+        return velocidadNave;
+    }
+
+    /**
+     * El metodo `showInfoPlaneta` muestra la informacion del planeta seleccionado y retorna la distancia desde la tierra.
+     * 
+     * @param planetaSeleccionado Representa el planeta seleccionado.
+     * @return El método retorna un double con la distancia aproximada desde la tierra hasta el planeta selecionado.
+     */
+    private static double showInfoPlaneta(int planetaSeleccionado) {
+        String mensaje = "";
+        var distanciaPlaneta = 0l;
         if (planetaSeleccionado == 1) {
             mensaje = """
 
@@ -121,6 +312,8 @@ public class simulador{
 
 
                                                             """;
+            distanciaPlaneta = 91000000;
+
         } else if (planetaSeleccionado == 2) {
             mensaje = """
 
@@ -140,8 +333,9 @@ public class simulador{
 
                     * Superficie aplastada: La presión atmosférica en su superficie es 90 veces mayor que la de la Tierra, similar a estar a 1 km bajo el agua.
                                         """;
+            distanciaPlaneta = 41000000;
 
-        }else if (planetaSeleccionado == 3) {
+        } else if (planetaSeleccionado == 3) {
             mensaje = """
 
                     SELECCIONASTE MARTE, AQUI TENEMOS INFORMACION DEL PLANETA AL QUE VAS A VIAJAR:
@@ -159,10 +353,11 @@ public class simulador{
 
                     * Exploración activa: Actualmente, Marte es el planeta más visitado por robots, como los rovers Perseverance y Curiosity, que buscan signos de vida pasada.
                     """;
-            
-        }else if(planetaSeleccionado == 4){
+            distanciaPlaneta = 225000000;
+
+        } else if (planetaSeleccionado == 4) {
             mensaje = """
-                    
+
                     SELECCIONASTE JUPITER, AQUI TENEMOS INFORMACION DEL PLANETA AL QUE VAS A VIAJAR:
 
                     La distancia entre la Tierra y Júpiter varía considerablemente debido a las órbitas elípticas de ambos planetas alrededor del Sol.
@@ -178,14 +373,16 @@ public class simulador{
 
                     * Magnetosfera inmensa: Tiene el campo magnético más fuerte de cualquier planeta, abarcando millones de kilómetros en el espacio.
                     """;
-        }else if (planetaSeleccionado == 5) {
+            distanciaPlaneta = 778000000;
+
+        } else if (planetaSeleccionado == 5) {
             mensaje = """
 
                     SELECCIONASTE SATURNO, AQUI TENEMOS INFORMACION DEL PLANETA AL QUE VAS A VIAJAR:
 
                     La distancia entre la Tierra y Saturno varía significativamente debido a las órbitas elípticas de ambos planetas alrededor del Sol.
                     En promedio, la distancia es de aproximadamente 1.4 mil millones de kilómetros (870 millones de millas).
-                    
+
                     * Anillos famosos: Sus anillos son los más visibles y extensos del sistema solar, con un diámetro de unos 282,000 km, pero son extremadamente delgados.
 
                     * Numerosas lunas: Tiene 146 lunas conocidas, siendo Titán la más grande y una de las pocas lunas en el sistema solar con atmósfera.
@@ -196,14 +393,16 @@ public class simulador{
 
                     * Corto día, largo año: Un día en Saturno dura solo 10.7 horas, pero tarda 29.5 años terrestres en completar una órbita alrededor del Sol.
                     """;
-        }else if (planetaSeleccionado == 6) {
+            distanciaPlaneta = 1400000000;
+
+        } else if (planetaSeleccionado == 6) {
             mensaje = """
-                    
+
                     SELECCIONASTE URANO, AQUI TENEMOS INFORMACION DEL PLANETA AL QUE VAS A VIAJAR:
 
                     La distancia entre la Tierra y Urano varía considerablemente debido a las órbitas elípticas de ambos planetas alrededor del Sol.
                     En promedio, la distancia es de aproximadamente 2.87 mil millones de kilómetros (1.78 mil millones de millas).
-                    
+
                     * Rotación "de lado": Su inclinación extrema hace que parezca rodar alrededor del Sol, con estaciones de hasta 42 años terrestres de luz o oscuridad en sus polos.
 
                     * Vientos rápidos: Tiene vientos que alcanzan velocidades de 900 km/h, especialmente en su atmósfera inferior.
@@ -214,14 +413,16 @@ public class simulador{
 
                     * 27 lunas: Sus lunas tienen nombres únicos, basados en personajes de obras de Shakespeare y Alexander Pope, como Titania y Oberón.
                     """;
-        }else if (planetaSeleccionado == 7) {
+            distanciaPlaneta = 2870000000l;
+
+        } else if (planetaSeleccionado == 7) {
             mensaje = """
 
                     SELECCIONASTE NEPTUNO, AQUI TENEMOS INFORMACION DEL PLANETA AL QUE VAS A VIAJAR:
 
                     La distancia entre la Tierra y Neptuno varía ampliamente debido a las órbitas elípticas de ambos planetas alrededor del Sol.
                     En promedio, la distancia es de aproximadamente 4.3 mil millones de kilómetros (2.7 mil millones de millas).
-                    
+
                     * Vientos más rápidos: Los vientos en Neptuno pueden alcanzar velocidades de hasta 2,100 km/h.
 
                     * Gran Mancha Oscura: Similar a la Gran Mancha Roja de Júpiter, Neptuno tiene una tormenta gigante que se desplaza por su atmósfera.
@@ -232,77 +433,13 @@ public class simulador{
 
                     * Lento pero constante: Neptuno tarda 165 años terrestres en completar una órbita alrededor del Sol, pero su día dura solo 16 horas.
                     """;
-        }else {
-            System.out.println("Opcion incorrecta, escoge uno de los planetas listados.");
+            distanciaPlaneta = 4300000000l;
+
+        } else {
+            System.err.println("Opcion incorrecta, escoge uno de los planetas listados.");
         }
 
-        System.out.println(mensaje);  
+        System.out.println(mensaje);
+        return distanciaPlaneta;
     }
-
-    private static void simularViaje(String planeta, int distancia, int velocidad) {
-        Random random = new Random();
-        int progreso = 0;
-        int tiempoTotalHoras = distancia * 1000000 / velocidad; 
-        int tiempoTranscurrido = 0;
-
-        System.out.printf("%nIniciando viaje hacia %s...%n", planeta);
-        System.out.printf("Distancia: %d millones de km%n", distancia);
-        System.out.printf("Velocidad: %d km/h%n", velocidad);
-        System.out.printf("Tiempo estimado: %d horas%n", tiempoTotalHoras);
-
-        while (progreso < 100) {
-            try {
-                Thread.sleep(500); 
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            progreso += 10;
-            tiempoTranscurrido += tiempoTotalHoras / 10;
-
-            System.out.print("Progreso del viaje: " + progreso + "% ");
-            System.out.print("[");
-            for (int i = 0; i < progreso / 10; i++) {
-                System.out.print("-");
-            }
-            for (int i = progreso / 10; i < 10; i++) {
-                System.out.print(" ");
-            }
-            System.out.println("]");
-
-            System.out.printf("Tiempo transcurrido: %d horas de %d%n", tiempoTranscurrido, tiempoTotalHoras);
-
-            if (random.nextInt(10) < 2) {
-                String evento = switch (random.nextInt(3)) {
-                    case 0 -> "¡Alerta! Asteroides detectados.";
-                    case 1 -> "¡Falla en el sistema! Reparando...";
-                    case 2 -> "¡Desvío inesperado! Calculando nueva ruta...";
-                    default -> "";
-                };
-                System.out.println(evento);
-            }
-        }
-
-        System.out.printf("%n¡Has llegado a %s!%n", planeta);
-    }
-
-    private static int solicitarEntero(Scanner entrada, String mensaje) {
-        int numero = -1;
-        boolean valido = false;
-
-        do {
-            System.out.print(mensaje);
-            if (entrada.hasNextInt()) {
-                numero = entrada.nextInt();
-                valido = true;
-            } else {
-                System.out.println("Entrada inválida. Por favor, ingrese un número entero.");
-                entrada.next(); 
-            }
-        } while (!valido);
-
-        return numero;
-    
-
-}
 }
