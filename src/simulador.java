@@ -87,18 +87,26 @@ public class simulador {
                                 // Este código solicita al usuario que ingrese la cantidad de pasajeros que viajarán,  
                                 // valida si la entrada es menor o igual a 0. Si es así, se muestra un mensaje de error pidiendo al usuario que ingrese al menos 1 pasajero.
                                 // si es mayor a 0, muestra el número de pasajeros ingresados, el ciclo continúa hasta que se proporciona una entrada válida.
-                                System.out.printf("%n%nIngrese la cantidad de pasajeros que van a viajar: %n%n");
-                                pasajeros = entrada.nextInt();
-                                boolean exitPasajeros = false;
-                                do {
-                                    if (pasajeros <= 0) {
-                                        System.err.printf("Ingrese al menos 1 pasajero para el viaje: %n%n");
-                                        break;
-                                    } else {
-                                        System.out.printf("La cantidad de pasajeros es: %s%n%n", pasajeros);
-                                        exitPasajeros = true;
-                                    }
-                                } while (!exitPasajeros);
+                                if (velocidadNave == 0) {
+                                    System.err.printf("%nPrimero debe seleccionar una nave antes de ingresar pasajeros.%n");
+                                } else {
+                                    boolean pasajerosValidos = false;
+                                    int capacidadMaxima = obtenerCapacidadMaximaNave(velocidadNave);
+                            
+                                    do {
+                                        System.out.printf("%nIngrese la cantidad de pasajeros que van a viajar (máximo permitido: %d): %n", capacidadMaxima);
+                                        pasajeros = entrada.nextInt();
+                            
+                                        if (pasajeros <= 0) {
+                                            System.err.printf("Debe ingresar al menos 1 pasajero.%n");
+                                        } else if (pasajeros > capacidadMaxima) {
+                                            System.err.printf("La cantidad ingresada supera la capacidad máxima de la nave. Intente nuevamente.%n");
+                                        } else {
+                                            System.out.printf("Cantidad de pasajeros confirmada: %d%n", pasajeros);
+                                            pasajerosValidos = true;
+                                        }
+                                    } while (!pasajerosValidos);
+                                }
                                 break;
                             case 3:
                                 // Este codigo comprueba si ya se ha escogido una nave, de ser verdadero entra a un bucle que pide al usuario 
@@ -281,6 +289,20 @@ public class simulador {
             return true;
         }
     }
+    private static int obtenerCapacidadMaximaNave(double velocidadNave) {
+        if (velocidadNave == 1900000) { // Falcon001
+            return 10;
+        } else if (velocidadNave == 3500000) { // Falcon002
+            return 5;
+        } else if (velocidadNave == 2700000) { // Falcon003
+            return 7;
+        } else if (velocidadNave == 3000000) { // Falcon004
+            return 8;
+        } else {
+            return 0; // En caso de que no haya una nave seleccionada
+        }
+    }
+    
 
     /**
      * El metodo `showInfoNave` muestra la informacion de la nave seleccionada y retorna la velocidad máxima de la misma.
