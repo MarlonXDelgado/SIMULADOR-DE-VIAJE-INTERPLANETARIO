@@ -11,6 +11,7 @@ public class simulador {
         int menuPrincipal, menuNaves, pasajeros, oxigeno, combustible;
 
         do {
+            //Menu principal del juego que muestra las opciones disponibles del simulador del viaje interplanetario.
             System.out.printf("%n%n====SIMULADOR DE VIAJE INTERPLANETARIO=====%n%n");
             System.out.println("1. Seleccion de planetas de destino");
             System.out.println("2. Seleccion de nave espacial");
@@ -21,6 +22,10 @@ public class simulador {
 
             switch (menuPrincipal) {
                 case 1:
+                    // Este código implementa un bucle que permite al usuario seleccionar un planeta al que viajar, mediante el metodo showInfoPlaneta.
+                    // muestra una lista de planetas, solicita al usuario que seleccione un planeta, muestra información sobre el planeta
+                    // seleccionado y pide al usuario que confirme su seleccion, el ciclo continúa hasta que el usuario confirma el planeta a viajar.
+
                     boolean exitPlaneta = false;
                     int salidaPlaneta;
 
@@ -39,6 +44,7 @@ public class simulador {
 
                     break;
                 case 2:
+                    //Menú que muestra las opciones disponibles para gestionar la nave, los pasajeros y sus recursos.
                     do {
                         System.out.printf("%n%n====GESTION DE LA NAVE ESPACIAL=====%n%n");
                         System.out.println("1. Seleccionar una nave para el viaje");
@@ -51,6 +57,10 @@ public class simulador {
 
                         switch (menuNaves) {
                             case 1:
+                                // Este codigo crea un bucle que permite al usuario seleccionar una nave para viajar. Mediante el metodo showInfoNave
+                                // muestra una lista de naves disponibles, solicita al usuario que seleccione una y muestra información sobre la nave, 
+                                // pide al usuario que confirme su seleccion. Si el usuario confirma, la variable `exitNave` se establece en verdadero, 
+                                // rompiendo el ciclo y regresando al usuario al menu principal.
                                 boolean exitNave = false;
                                 int salidaNave;
 
@@ -61,16 +71,20 @@ public class simulador {
                                     }
                                     var naveSeleccionado = entrada.nextInt();
                                     velocidadNave = showInfoNave(naveSeleccionado);
-                                    if (velocidadNave != 0){
-                                        System.out.printf("%n¿Esta seguro que desea usar la nave seleccionada?%n%n1. Si%n2. No%n%n");
+                                    if (velocidadNave != 0) {
+                                        System.out.printf(
+                                                "%n¿Esta seguro que desea usar la nave seleccionada?%n%n1. Si%n2. No%n%n");
                                         salidaNave = entrada.nextInt();
                                         exitNave = (salidaNave == 1) ? exitNave = true : exitNave;
                                     }
-                                    
+
                                 } while (!exitNave);
 
                                 break;
                             case 2:
+                                // Este código solicita al usuario que ingrese la cantidad de pasajeros que viajarán,  
+                                // valida si la entrada es menor o igual a 0. Si es así, se muestra un mensaje de error pidiendo al usuario que ingrese al menos 1 pasajero.
+                                // si es mayor a 0, muestra el número de pasajeros ingresados, el ciclo continúa hasta que se proporciona una entrada válida.
                                 System.out.printf("%n%nIngrese la cantidad de pasajeros que van a viajar: %n%n");
                                 pasajeros = entrada.nextInt();
                                 boolean exitPasajeros = false;
@@ -85,27 +99,37 @@ public class simulador {
                                 } while (!exitPasajeros);
                                 break;
                             case 3:
+                                // Este codigo comprueba si ya se ha escogido una nave, de ser verdadero entra a un bucle que pide al usuario 
+                                // que ingrese la cantidad de combustible y oxígeno necesarios para un viaje; mediante el metodo
+                                // manageResources valida si se ingresaron correctamente los recursos y se rompe el ciclo de ser verdadero.
                                 boolean exitRecursos = false;
                                 if (velocidadNave == 0) {
                                     System.err.printf("%nPrimero debe de seleccionar una nave...%n");
-                                } else{
+                                } else {
                                     do {
-                                        System.out.printf("%n%nIngrese la cantidad de galones de combustible para el viaje: %n");
+                                        System.out.printf(
+                                                "%n%nIngrese la cantidad de galones de combustible para el viaje: %n");
                                         combustible = entrada.nextInt();
-                                        System.out.printf("%n%nIngrese la cantidad de tanques de oxigeno para el viaje: %n");
+                                        System.out.printf(
+                                                "%n%nIngrese la cantidad de tanques de oxigeno para el viaje: %n");
                                         oxigeno = entrada.nextInt();
                                         exitRecursos = manageResources(combustible, oxigeno);
                                     } while (!exitRecursos);
                                 }
-                                
+
                                 break;
                             case 4:
+                                // Este codigo comprueba si ya se ha escogido una nave y un deestino, de ser verdadero
+                                // calcula e imprime la duración aproximada del viaje utilizando el método tripDuration,
+                                // generando validaciones de errores constantes hasta dar el resultado correcto.
                                 if (velocidadNave == 0 || distanciaPlaneta == 0) {
-                                    System.err.printf("%nPara calcular la duracion del viaje debe de elegir un planeta y escoger una nave...%n%n");
-                                }else{
-                                    System.out.printf("%nLa duracion del viaje seria aproximadamente de: %.2f dias.", tripDuration(velocidadNave, distanciaPlaneta));
+                                    System.err.printf(
+                                            "%nPara calcular la duracion del viaje debe de elegir un planeta y escoger una nave...%n%n");
+                                } else {
+                                    System.out.printf("%nLa duracion del viaje seria aproximadamente de: %.2f dias.",
+                                            tripDuration(velocidadNave, distanciaPlaneta));
                                 }
-                                
+
                                 break;
                             default:
                                 System.err.printf("%nOpcion incorrecta, por favor selecciona una opcion valida.%n");
@@ -132,23 +156,42 @@ public class simulador {
         } while (!exit);
         entrada.close();
     }
-//Este metodo nos permite ver la duracion aproximada en dias de cuanto puede durar nuestro viaje, se llama despues de validar si ya hay una nave seleccionada y un planeta seleccionado.
-private static double tripDuration(double velocidadNave, double distanciaPlaneta){
-    double traveltime;
-    traveltime = distanciaPlaneta/velocidadNave;
-    return traveltime;
-}
 
-    private static boolean manageResources (int combustible, int oxigeno){
+   
+    /**
+     * El metodo 'tripDuration'calcula la distancia en dias que demora el viaje desde la tierra hasta el planeta seleccionado.
+     * @param velocidadNave Representa la velocidad de la nave escogida para el viaje.
+     * @param distanciaPlaneta Representa la distancia del planeta escogido para el viaje.
+     * @return El método retorna un double con la duracion aproximada del viaje.
+     */
+    private static double tripDuration(double velocidadNave, double distanciaPlaneta) {
+        double traveltime;
+        traveltime = distanciaPlaneta / velocidadNave;
+        return traveltime;
+    }
+
+    /**
+     * El metodo 'manageResources' verifica si los recursos de oxigeno y combustible son suficientes.
+     * @param combustible Representa la cantidad de combustible en galones disponible para el viaje.
+     * @param oxigeno Representa la cantidad de anques de oxígeno idsponibles para el viaje.
+     * @return El método retorna un boolean que es verdadero si los recursos son los minimos y falso sino lo son.
+     */
+    private static boolean manageResources(int combustible, int oxigeno) {
         if (combustible <= 0 || oxigeno <= 0) {
-            System.err.printf("%nCantidad minima de tanques de oxigeno a ingresar: 1 tanque.%nCantidad minima de galones de combustible a ingresar: 1%n%n");
+            System.err.printf(
+                    "%nCantidad minima de tanques de oxigeno a ingresar: 1 tanque.%nCantidad minima de galones de combustible a ingresar: 1%n%n");
             return false;
-        }else{
+        } else {
             System.out.printf("%nRecursos embarcados y listos para el viaje...");
             return true;
         }
     }
 
+    /**
+     * El metodo `showInfoNave` muestra la informacion de la nave seleccionada y retorna la velocidad máxima de la misma.
+     * @param naveSeleccionado Representa la nave espacial seleccionada.
+     * @return El método retorna un double con la velocidad de la nave escogida para el viaje.
+     */
     private static double showInfoNave(int naveSeleccionado) {
         double velocidadNave = 0;
         String mensaje = "";
@@ -205,13 +248,19 @@ private static double tripDuration(double velocidadNave, double distanciaPlaneta
 
                     """;
             velocidadNave = 3000000;
-        }else{
+        } else {
             System.out.printf("%n%nOpcion incorrecta, por favor selecciona una opcion valida...");
         }
         System.out.println(mensaje);
         return velocidadNave;
     }
 
+    /**
+     * El metodo `showInfoPlaneta` muestra la informacion del planeta seleccionado y retorna la distancia desde la tierra.
+     * 
+     * @param planetaSeleccionado Representa el planeta seleccionado.
+     * @return El método retorna un double con la distancia aproximada desde la tierra hasta el planeta selecionado.
+     */
     private static double showInfoPlaneta(int planetaSeleccionado) {
         String mensaje = "";
         var distanciaPlaneta = 0l;
