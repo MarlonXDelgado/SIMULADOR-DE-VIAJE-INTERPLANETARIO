@@ -227,7 +227,7 @@ private static void simularViaje(double distancia, double velocidad, int oxigeno
     int maxCombustible = capacidades[0];
     int maxOxigeno = capacidades[1];
 
-    System.out.printf("%nIniciando viaje...%nDistancia: %.2f km%nVelocidad: %.2f km/h%nTiempo estimado: %.2f días%n",
+    System.out.printf("%nIniciando viaje...%nDistancia: %.2f km%nVelocidad: %.2f km/h%nTiempo estimado: %.2f horas%n",
             distancia, velocidad, tiempoTotal);
 
     while (progreso < 100) {
@@ -254,8 +254,8 @@ private static void simularViaje(double distancia, double velocidad, int oxigeno
 
         System.out.printf("Oxígeno restante: %d | Combustible restante: %d%n", oxigeno, combustible);
 
-        if (random.nextDouble() < 0.2) { // 20% de probabilidad de que ocurra algún evento
-            int eventoAleatorio =  (random.nextInt(2)); // Genera un evento entre 0 y 1
+        if (random.nextDouble() < 0.5) { // 50% de probabilidad de que ocurra algún evento
+            int eventoAleatorio =  (random.nextInt(3)); // Genera un evento entre 0, 1 y 2
             switch (eventoAleatorio) {
                 case 0: // Evento "Agujero de Gusano"
                     System.out.println("\n¡Has encontrado un agujero de gusano! ¿Deseas tomarlo?");
@@ -279,9 +279,29 @@ private static void simularViaje(double distancia, double velocidad, int oxigeno
 
                 case 1: 
                     System.out.println("\n¡Se detecta una lluvia de meteoritos cercana! Ajustando ruta para evitar daños.");
-                    tiempoTranscurrido += 1; // Se añade 1 hora al tiempo transcurrido por desvío
+                    tiempoTranscurrido += 5; // Se añade 5 hora al tiempo transcurrido por desvío
+                    System.out.println("devido al desvio tomara 5 horas mas de viaje");
+                    
                     break;
 
+                case 2: // Evento "Piratas Espaciales"      
+                    System.out.println("\n¡Cuidado! Has sido atacado por piratas espaciales.");
+                    int oxigenoRobado = oxigeno / 2; // Los piratas roban el 50% del oxígeno
+                    int combustibleRobado = combustible / 2; // Los piratas roban el 50% del combustible
+        
+                    // Actualiza los recursos
+                    oxigeno -= oxigenoRobado;
+                    combustible -= combustibleRobado;
+        
+                    System.out.printf("Los piratas espaciales han robado el 50%% de tus recursos: %d tanques de oxígeno y %d galones de combustible.%n",
+                            oxigenoRobado, combustibleRobado);
+        
+                    // Mensaje si los recursos son insuficientes después del ataque
+                    if (oxigeno <= 0 || combustible <= 0) {
+                        System.out.println("Tus recursos son insuficientes después del ataque de los piratas.");
+                    }
+                    break;
+                    
                 default:
                     System.out.println("\nEvento no reconocido. Continuando el viaje...");
                     break;
@@ -362,20 +382,17 @@ private static void simularViaje(double distancia, double velocidad, int oxigeno
     }
     private static int[] obtenerCapacidadMaximaCombustibleYOxigeno(double velocidadNave) {
         if (velocidadNave == 1900000) { // Falcon001
-            return new int[] { 100, 15 }; // {combustibleMax, oxigenoMax}
+            return new int[] { 100, 250 }; // {combustibleMax, oxigenoMax}
         } else if (velocidadNave == 3500000) { // Falcon002
-            return new int[] { 50, 10 };
+            return new int[] { 50, 100 };
         } else if (velocidadNave == 2700000) { // Falcon003
-            return new int[] { 70, 12 };
+            return new int[] { 70, 180 };
         } else if (velocidadNave == 3000000) { // Falcon004
-            return new int[] { 60, 20 };
+            return new int[] { 60, 200 };
         } else {
             return new int[] { 0, 0 }; // En caso de que no haya una nave seleccionada
         }
     }
-    
-    
-
     /**
      * El metodo `showInfoNave` muestra la informacion de la nave seleccionada y retorna la velocidad máxima de la misma.
      * @param naveSeleccionado Representa la nave espacial seleccionada.
