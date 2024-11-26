@@ -214,63 +214,88 @@ public class simulador {
     return true; // Recursos suficientes
 }
     
-    private static void simularViaje(double distancia, double velocidad, int oxigeno, int combustible, int pasajeros) {
-        Random random = new Random();
-        double progreso = 0;
-        double tiempoTotal = distancia / velocidad;
-        double tiempoTranscurrido = 0;
-        int consumoOxigenoPorHora = pasajeros;
-        int consumoCombustiblePorHora = 1; 
+private static void simularViaje(double distancia, double velocidad, int oxigeno, int combustible, int pasajeros) {
+    Random random = new Random();
+    double progreso = 0;
+    double tiempoTotal = distancia / velocidad;
+    double tiempoTranscurrido = 0;
+    int consumoOxigenoPorDia = pasajeros; // Consumo de oxígeno por día según el número de pasajeros
+    int consumoCombustiblePorDia = 1;    // Consumo de combustible por día
 
-        System.out.printf("%nIniciando viaje...%nDistancia: %.2f km%nVelocidad: %.2f km/h%nTiempo estimado: %.2f horas%n",
-                distancia, velocidad, tiempoTotal);
+    int[] capacidades = obtenerCapacidadMaximaCombustibleYOxigeno(velocidad); // Límites máximos
+    int maxCombustible = capacidades[0];
+    int maxOxigeno = capacidades[1];
 
-        while (progreso < 100 && oxigeno > 0 && combustible > 0) {
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+    System.out.printf("%nIniciando viaje...%nDistancia: %.2f km%nVelocidad: %.2f km/h%nTiempo estimado: %.2f días%n",
+            distancia, velocidad, tiempoTotal);
 
-            progreso += 10;
-            tiempoTranscurrido += tiempoTotal / 10;
-            oxigeno -= consumoOxigenoPorHora;
-            combustible -= consumoCombustiblePorHora ;
+    while (progreso < 100) {
+        try {
+            Thread.sleep(500); // Simula tiempo transcurrido
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
-            System.out.printf("Progreso: %.0f%% [", progreso);
-            for (int i = 0; i < progreso / 10; i++) {
-                System.out.print("-");
-            }
-            for (int i = (int) progreso / 10; i < 10; i++) {
-                System.out.print(" ");
-            }
-            System.out.println("]");
+        progreso += 10;
+        tiempoTranscurrido += tiempoTotal / 10;
+        oxigeno -= consumoOxigenoPorDia;
+        combustible -= consumoCombustiblePorDia;
 
-            if (oxigeno > 0 && combustible > 0) {
-                System.out.printf("Oxígeno restante: %d | Combustible restante: %d%n", oxigeno, combustible);
+        // Mostrar progreso del viaje
+        System.out.printf("Progreso: %.0f%% [", progreso);
+        for (int i = 0; i < progreso / 10; i++) {
+            System.out.print("-");
+        }
+        for (int i = (int) progreso / 10; i < 10; i++) {
+            System.out.print(" ");
+        }
+        System.out.println("]");
+
+        System.out.printf("Oxígeno restante: %d | Combustible restante: %d%n", oxigeno, combustible);
+
+        // Verificar recursos
+        if (oxigeno <= 0 || combustible <= 0) {
+            System.out.println("Recursos insuficientes. Estación Espacial detectada.");
+
+            Scanner scanner = new Scanner(System.in);
+            System.out.println("¿Desea detenerse en la estación para recargar recursos? (1: Sí / 2: No)");
+            int opcion = scanner.nextInt();
+
+            if (opcion == 1) {
+                // Recargar recursos al máximo permitido por la nave
+                oxigeno = maxOxigeno;
+                combustible = maxCombustible;
+                System.out.printf("Recargando... Oxígeno: %d | Combustible: %d%n", oxigeno, combustible);
             } else {
-                System.out.println("Recursos agotados: Nave en modo de emergencia.");
-               
-            }
+                System.out.println("Continuando sin detenerse en la estación. El viaje podría fallar.");
 
-            if (random.nextInt(10) < 2) {
-                String evento = switch (random.nextInt(3)) {
-                    case 0 -> "¡Alerta! Asteroides detectados.";
-                    case 1 -> "¡Falla técnica! Reparando sistemas...";
-                    case 2 -> "¡Desvío inesperado! Recalculando ruta...";
-                    default -> "";
-                };
-                System.out.println(evento);
-                tiempoTranscurrido += 0.5;
+                scanner.close();
             }
         }
 
+        // Evento aleatorio
+        if (random.nextInt(10) < 2) {
+            String evento = switch (random.nextInt(3)) {
+                case 0 -> "¡Alerta! Asteroides detectados.";
+                case 1 -> "¡Falla técnica! Reparando sistemas...";
+                case 2 -> "¡Desvío inesperado! Recalculando ruta...";
+                default -> "";
+            };
+            System.out.println(evento);
+            tiempoTranscurrido += 0.5;
+        }
+
+        // Terminar si ambos recursos se agotan y no se detuvieron en la estación
         if (oxigeno <= 0 || combustible <= 0) {
-            System.out.println("El viaje no pudo completarse debido a recursos insuficientes.");
-        } else {
-            System.out.printf("%n¡Has llegado a tu destino! Tiempo total: %.2f horas%n", tiempoTranscurrido);
+            System.out.println("El viaje ha fallado por falta de recursos.");
+            return; // Finaliza la simulación
         }
     }
+
+    System.out.printf("%n¡Has llegado a tu destino! Tiempo total: %.2f horas%n", tiempoTranscurrido);
+    
+}
+
    
     /**
      * El metodo 'tripDuration'calcula la distancia en dias que demora el viaje desde la tierra hasta el planeta seleccionado.
