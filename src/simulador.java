@@ -1,3 +1,4 @@
+
 import java.util.Scanner;
 
 public class simulador {
@@ -8,7 +9,7 @@ public class simulador {
         String listaNaves[] = { "Falcon001", "Falcon002", "Falcon003", "Falcon004" };
         boolean exit = false;
         double velocidadNave = 0, distanciaPlaneta = 0, traveltime = 0;
-        int menuPrincipal, menuNaves, pasajeros, oxigeno, combustible;
+        int menuPrincipal, menuNaves, pasajeros = 0, oxigeno = 0, combustible = 0;
 
         do {
             //Menu principal del juego que muestra las opciones disponibles del simulador del viaje interplanetario.
@@ -140,8 +141,12 @@ public class simulador {
 
                     break;
                 case 3:
-
-                    break;
+                if (distanciaPlaneta == 0 || velocidadNave == 0 || pasajeros == 0 || oxigeno == 0 || combustible == 0) {
+                    System.err.printf("%nDebe completar la configuración del viaje antes de iniciar la simulación.%n");
+                } else {
+                    simularViaje(distanciaPlaneta, velocidadNave);
+                }
+                break;
 
                 case 4:
                     System.out.printf("%nHasta pronto!!!");
@@ -156,7 +161,29 @@ public class simulador {
         } while (!exit);
         entrada.close();
     }
+    private static void simularViaje(double distanciaPlaneta, double velocidadNave) {
+        double duracionDias = tripDuration(velocidadNave, distanciaPlaneta);
+        System.out.printf("%nSimulando viaje... Duración estimada: %.2f días.%n", duracionDias);
 
+        for (int progreso = 0; progreso <= 100; progreso += 10) {
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.printf("Progreso del viaje: %d%%%n", progreso);
+            System.out.print("[");
+            for (int i = 0; i < progreso / 10; i++) {
+                System.out.print("-");
+            }
+            for (int i = progreso / 10; i < 10; i++) {
+                System.out.print(" ");
+            }
+            System.out.println("]");
+        }
+
+        System.out.printf("%n¡Viaje completado!%n");
+    }
    
     /**
      * El metodo 'tripDuration'calcula la distancia en dias que demora el viaje desde la tierra hasta el planeta seleccionado.
