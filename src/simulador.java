@@ -9,7 +9,7 @@ public class simulador {
         String listaPlanetas[] = { "Mercurio", "Venus", "Marte", "Jupiter", "saturno", "Urano", "neptuno" };
         String listaNaves[] = { "Falcon001", "Falcon002", "Falcon003", "Falcon004" };
         boolean exit = false;
-        double velocidadNave = 0, distanciaPlaneta = 0, traveltime = 0;
+        double velocidadNave = 0, distanciaPlaneta = 0;
         int menuPrincipal, menuNaves, pasajeros = 0, oxigeno = 0, combustible = 0;
 
         do {
@@ -128,7 +128,7 @@ public class simulador {
                                     System.err.printf(
                                             "%nPara calcular la duracion del viaje debe de elegir un planeta y escoger una nave...%n%n");
                                 } else {
-                                    System.out.printf("%nLa duracion del viaje seria aproximadamente de: %.2f dias.",
+                                    System.out.printf("%nLa duracion del viaje seria aproximadamente de: %.2f horas.",
                                             tripDuration(velocidadNave, distanciaPlaneta));
                                 }
 
@@ -149,9 +149,18 @@ public class simulador {
                 if (distanciaPlaneta == 0 || velocidadNave == 0 || pasajeros == 0 || oxigeno == 0 || combustible == 0) {
                     System.err.printf("%nDebe completar la configuración del viaje antes de iniciar la simulación.%n");
                 } else {
-                    simularViaje(distanciaPlaneta, velocidadNave,oxigeno,combustible);
+                    double duracionViaje = tripDuration(velocidadNave, distanciaPlaneta);
+            
+                    // Verificar recursos, pero permitir continuar
+                    if (!verificarRecursos(duracionViaje, pasajeros, oxigeno, combustible)) {
+                        System.out.println("Advertencia: Los recursos son insuficientes. Continuaremos la simulación bajo estas condiciones.");
+                    }
+            
+                    // Llamar a la simulación independientemente de los recursos
+                    simularViaje(distanciaPlaneta, velocidadNave, oxigeno, combustible, pasajeros);
                 }
                 break;
+
 
                 case 4:
                     System.out.printf("%nHasta pronto!!!");
@@ -166,11 +175,33 @@ public class simulador {
         } while (!exit);
         entrada.close();
     }
-    private static void simularViaje(double distancia, double velocidad, int oxigeno, int combustible) {
+
+    private static boolean verificarRecursos(double duracionViaje, int pasajeros, int oxigeno, int combustible) {
+    int oxigenoRequerido = (int) Math.ceil(duracionViaje * pasajeros); // Oxígeno necesario
+    int combustibleRequerido = (int) Math.ceil(duracionViaje); // Combustible necesario
+
+    if (oxigeno < oxigenoRequerido || combustible < combustibleRequerido) {
+        System.out.printf("%nRecursos insuficientes:%n");
+        if (oxigeno < oxigenoRequerido) {
+            System.out.printf("- Oxígeno faltante: %d tanques%n", oxigenoRequerido - oxigeno);
+        }
+        if (combustible < combustibleRequerido) {
+            System.out.printf("- Combustible faltante: %d galones%n", combustibleRequerido - combustible);
+        }
+        return false; // Recursos insuficientes
+    }
+
+    System.out.println("Recursos suficientes para el viaje.");
+    return true; // Recursos suficientes
+}
+    
+    private static void simularViaje(double distancia, double velocidad, int oxigeno, int combustible, int pasajeros) {
         Random random = new Random();
         double progreso = 0;
         double tiempoTotal = distancia / velocidad;
         double tiempoTranscurrido = 0;
+        int consumoOxigenoPorHora = pasajeros;
+        int consumoCombustiblePorHora = 1; 
 
         System.out.printf("%nIniciando viaje...%nDistancia: %.2f km%nVelocidad: %.2f km/h%nTiempo estimado: %.2f horas%n",
                 distancia, velocidad, tiempoTotal);
@@ -184,8 +215,8 @@ public class simulador {
 
             progreso += 10;
             tiempoTranscurrido += tiempoTotal / 10;
-            oxigeno -= 1;
-            combustible -= 10;
+            oxigeno -= consumoOxigenoPorHora;
+            combustible -= consumoCombustiblePorHora ;
 
             System.out.printf("Progreso: %.0f%% [", progreso);
             for (int i = 0; i < progreso / 10; i++) {
@@ -196,7 +227,12 @@ public class simulador {
             }
             System.out.println("]");
 
-            System.out.printf("Oxígeno restante: %d | Combustible restante: %d%n", oxigeno, combustible);
+            if (oxigeno > 0 && combustible > 0) {
+                System.out.printf("Oxígeno restante: %d | Combustible restante: %d%n", oxigeno, combustible);
+            } else {
+                System.out.println("Recursos agotados: Nave en modo de emergencia.");
+               
+            }
 
             if (random.nextInt(10) < 2) {
                 String evento = switch (random.nextInt(3)) {
@@ -262,8 +298,8 @@ public class simulador {
                     Nombre: Falcon001
                     Especialidad: Carga de pasajeros
                     Capacidad de carga: 10 personas
-                    Velocidad Maxima: 1.900.000 km/dia
-                    Tanques de oxigeno: 15
+                    Velocidad Maxima: 1.900.000 km/h
+                    Tanques de oxigeno: 250
                     Combustible maximo: 100 galones
 
                     """;
@@ -275,8 +311,8 @@ public class simulador {
                     Nombre: Falcon002
                     Especialidad: Velocidad Ultra
                     Capacidad de carga: 5 personas
-                    Velocidad Maxima: 3.500.000 km/dia
-                    Tanques de oxigeno: 10
+                    Velocidad Maxima: 3.500.000 km/h
+                    Tanques de oxigeno: 100
                     Combustible maximo: 50 galones
 
                     """;
@@ -288,8 +324,8 @@ public class simulador {
                     Nombre: Falcon003
                     Especialidad: Carga Mixta
                     Capacidad de carga: 7 personas
-                    Velocidad Maxima: 2.700.000 km/dia
-                    Tanques de oxigeno: 12
+                    Velocidad Maxima: 2.700.000 km/h
+                    Tanques de oxigeno: 180
                     Combustible maximo: 70 galones
 
                     """;
@@ -301,8 +337,8 @@ public class simulador {
                     Nombre: Falcon004
                     Especialidad: Reserva de oxigeno
                     Capacidad de carga: 8 personas
-                    Velocidad Maxima: 3.000.000 km/dia
-                    Tanques de oxigeno: 20
+                    Velocidad Maxima: 3.000.000 km/h
+                    Tanques de oxigeno: 200
                     Combustible maximo: 60 galones
 
                     """;
