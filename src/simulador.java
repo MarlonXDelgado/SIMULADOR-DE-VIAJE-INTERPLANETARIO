@@ -216,6 +216,7 @@ public class simulador {
     
 private static void simularViaje(double distancia, double velocidad, int oxigeno, int combustible, int pasajeros) {
     Random random = new Random();
+    Scanner scanner = new Scanner(System.in);
     double progreso = 0;
     double tiempoTotal = distancia / velocidad;
     double tiempoTranscurrido = 0;
@@ -231,7 +232,7 @@ private static void simularViaje(double distancia, double velocidad, int oxigeno
 
     while (progreso < 100) {
         try {
-            Thread.sleep(500); // Simula tiempo transcurrido
+            Thread.sleep(2000); // Simula tiempo transcurrido
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -253,11 +254,44 @@ private static void simularViaje(double distancia, double velocidad, int oxigeno
 
         System.out.printf("Oxígeno restante: %d | Combustible restante: %d%n", oxigeno, combustible);
 
+        if (random.nextDouble() < 0.2) { // 20% de probabilidad de que ocurra algún evento
+            int eventoAleatorio =  (random.nextInt(2)); // Genera un evento entre 0 y 1
+            switch (eventoAleatorio) {
+                case 0: // Evento "Agujero de Gusano"
+                    System.out.println("\n¡Has encontrado un agujero de gusano! ¿Deseas tomarlo?");
+                    System.out.println("1. Sí, tomar el agujero de gusano.");
+                    System.out.println("2. No, continuar el viaje normalmente.");
+
+                    int decision = scanner.nextInt();
+
+                    if (decision == 1) {
+                        System.out.println("\n¡Has tomado el agujero de gusano! Avanzando un 40% más.");
+                        progreso += 40; // Avanza un 40% más
+                        if (progreso > 100) {
+                            progreso = 100; // Limitar el progreso al 100%
+                        }
+                    } else if (decision == 2) {
+                        System.out.println("\nHas decidido no tomar el agujero de gusano. Continuando el viaje normalmente.");
+                    } else {
+                        System.out.println("\nOpción inválida. Continuando el viaje normalmente.");
+                    }
+                    break;
+
+                case 1: 
+                    System.out.println("\n¡Se detecta una lluvia de meteoritos cercana! Ajustando ruta para evitar daños.");
+                    tiempoTranscurrido += 1; // Se añade 1 hora al tiempo transcurrido por desvío
+                    break;
+
+                default:
+                    System.out.println("\nEvento no reconocido. Continuando el viaje...");
+                    break;
+            }
+        }
+
         // Verificar recursos
         if (oxigeno <= 0 || combustible <= 0) {
             System.out.println("Recursos insuficientes. Estación Espacial detectada.");
 
-            Scanner scanner = new Scanner(System.in);
             System.out.println("¿Desea detenerse en la estación para recargar recursos? (1: Sí / 2: No)");
             int opcion = scanner.nextInt();
 
@@ -271,18 +305,6 @@ private static void simularViaje(double distancia, double velocidad, int oxigeno
 
                 scanner.close();
             }
-        }
-
-        // Evento aleatorio
-        if (random.nextInt(10) < 2) {
-            String evento = switch (random.nextInt(3)) {
-                case 0 -> "¡Alerta! Asteroides detectados.";
-                case 1 -> "¡Falla técnica! Reparando sistemas...";
-                case 2 -> "¡Desvío inesperado! Recalculando ruta...";
-                default -> "";
-            };
-            System.out.println(evento);
-            tiempoTranscurrido += 0.5;
         }
 
         // Terminar si ambos recursos se agotan y no se detuvieron en la estación
