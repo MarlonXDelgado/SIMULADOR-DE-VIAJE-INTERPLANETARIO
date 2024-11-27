@@ -38,10 +38,13 @@ public class simulador {
                         }
                         var planetaSeleccionado = entrada.nextInt();
                         distanciaPlaneta = showInfoPlaneta(planetaSeleccionado);
-                        System.out.printf(
-                                "%n¿Esta seguro que quiere viajar al planeta seleccionado?%n%n1. Si%n2. No%n%n");
+                        
+                        if (distanciaPlaneta > 0) {
+                            System.out.printf( "%n%n¿Esta seguro que quiere viajar al planeta seleccionado?%n%n1. Si%n2. No%n%n");
                         salidaPlaneta = entrada.nextInt();
                         exitPlaneta = (salidaPlaneta == 1) ? exitPlaneta = true : exitPlaneta;
+                        }
+                        
                     } while (!exitPlaneta);
 
                     break;
@@ -73,7 +76,7 @@ public class simulador {
                                     }
                                     var naveSeleccionado = entrada.nextInt();
                                     velocidadNave = showInfoNave(naveSeleccionado);
-                                    if (velocidadNave != 0) {
+                                    if (velocidadNave > 0) {
                                         System.out.printf(
                                                 "%n¿Esta seguro que desea usar la nave seleccionada?%n%n1. Si%n2. No%n%n");
                                         salidaNave = entrada.nextInt();
