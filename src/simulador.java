@@ -219,13 +219,15 @@ private static void simularViaje(double distancia, double velocidad, int oxigeno
     Scanner scanner = new Scanner(System.in);
     double progreso = 0;
     double tiempoTotal = distancia / velocidad;
-    double tiempoTranscurrido = 0;
+    double tiempoTranscurrido = 0, tiempoExtra = 0;
     int consumoOxigenoPorDia = pasajeros; // Consumo de oxígeno por día según el número de pasajeros
     int consumoCombustiblePorDia = 1;    // Consumo de combustible por día
-
     int[] capacidades = obtenerCapacidadMaximaCombustibleYOxigeno(velocidad); // Límites máximos
     int maxCombustible = capacidades[0];
     int maxOxigeno = capacidades[1];
+    int consumoOxigenoPorHora = pasajeros; // Oxígeno consumido por hora, depende del número de pasajeros
+    int consumoCombustiblePorHora = 1;    // Combustible consumido por hora, constante
+
 
     System.out.printf("%nIniciando viaje...%nDistancia: %.2f km%nVelocidad: %.2f km/h%nTiempo estimado: %.2f horas%n",
             distancia, velocidad, tiempoTotal);
@@ -242,6 +244,11 @@ private static void simularViaje(double distancia, double velocidad, int oxigeno
         oxigeno -= consumoOxigenoPorDia;
         combustible -= consumoCombustiblePorDia;
 
+
+        // Reducir recursos proporcionalmente al tiempo transcurrido en esta iteración
+        oxigeno -= (int) Math.ceil(tiempoTranscurrido * consumoOxigenoPorHora);
+        combustible -= (int) Math.ceil(tiempoTranscurrido * consumoCombustiblePorHora);
+
         // Mostrar progreso del viaje
         System.out.printf("Progreso: %.0f%% [", progreso);
         for (int i = 0; i < progreso / 10; i++) {
@@ -255,7 +262,7 @@ private static void simularViaje(double distancia, double velocidad, int oxigeno
         System.out.printf("Oxígeno restante: %d | Combustible restante: %d%n", oxigeno, combustible);
 
         if (random.nextDouble() < 0.5) { // 50% de probabilidad de que ocurra algún evento
-            int eventoAleatorio =  (random.nextInt(3)); // Genera un evento entre 0, 1 y 2
+            int eventoAleatorio =  (random.nextInt(4)); // Genera un evento entre 0, 1, 2 y 3
             switch (eventoAleatorio) {
                 case 0: // Evento "Agujero de Gusano"
                     System.out.println("\n¡Has encontrado un agujero de gusano! ¿Deseas tomarlo?");
@@ -279,9 +286,12 @@ private static void simularViaje(double distancia, double velocidad, int oxigeno
 
                 case 1: 
                     System.out.println("\n¡Se detecta una lluvia de meteoritos cercana! Ajustando ruta para evitar daños.");
-                    tiempoTranscurrido += 5; // Se añade 5 hora al tiempo transcurrido por desvío
-                    System.out.println("devido al desvio tomara 5 horas mas de viaje");
-                    
+                    tiempoExtra = 5; // Se añade 5 hora al tiempo transcurrido por desvío
+                    tiempoTranscurrido += tiempoExtra;
+                    oxigeno -= (int) Math.ceil(tiempoExtra * consumoOxigenoPorHora);
+                    combustible -= (int) Math.ceil(tiempoExtra * consumoCombustiblePorHora);
+                    System.out.println("Debido al desvío, el viaje tomará 5 horas adicionales.");
+
                     break;
 
                 case 2: // Evento "Piratas Espaciales"      
@@ -300,6 +310,48 @@ private static void simularViaje(double distancia, double velocidad, int oxigeno
                     if (oxigeno <= 0 || combustible <= 0) {
                         System.out.println("Tus recursos son insuficientes después del ataque de los piratas.");
                     }
+                    break;
+
+                    case 3: 
+                    System.out.println("\n¡Alerta! Has entrado en una zona de bajas temperaturas.");
+                    System.out.println("La temperatura afecta el rendimiento de la nave. Se reduce la velocidad en un 50%.");
+                    
+                    // Reducir la velocidad de la nave a la mitad
+                    velocidad /= 2;
+                
+                    // Calcular el impacto en el tiempo y recursos
+                    double tiempoRestante = (distancia - (progreso / 100.0) * distancia) / velocidad;
+                    int oxigenoExtra = (int) Math.ceil(tiempoRestante * consumoOxigenoPorDia);
+                    int combustibleExtra = (int) Math.ceil(tiempoRestante * consumoCombustiblePorDia);
+                
+                    // Ajustar los recursos restantes
+                    oxigeno -= (int) Math.ceil(oxigenoExtra);
+                    combustible -= (int) Math.ceil(combustibleExtra);
+                
+                    System.out.printf("La velocidad actual de la nave es ahora: %.2f km/h%n", velocidad);
+                    System.out.printf("Se estima que tomará %.2f horas adicionales llegar a tu destino.%n", tiempoRestante);
+                    System.out.printf("El consumo extra será de %d tanques de oxígeno y %d galones de combustible.%n",
+                            oxigenoExtra, combustibleExtra);
+                
+                    // Verificar si los recursos son suficientes después del impacto
+                    if (oxigeno <= 0 || combustible <= 0) {
+                        System.out.println("\nTus recursos son insuficientes debido a las bajas temperaturas.");
+                        System.out.println("¿Deseas detenerte en la estación espacial para reabastecerte? (1: Sí, 2: No)");
+                
+                        int decisionEstacion = scanner.nextInt();
+                
+                        if (decisionEstacion == 1) {
+                            // Llenar los recursos al máximo
+                            oxigeno = maxCombustible;
+                            combustible = maxOxigeno;
+                
+                            System.out.println("Has recargado tus recursos en la estación espacial. Continuando el viaje...");
+                        } else {
+                            System.out.println("Has decidido no detenerte en la estación espacial.");
+                            System.out.println("¡El viaje ha fallado por falta de recursos!");
+                            return; // Finaliza la simulación
+                    }
+                }
                     break;
                     
                 default:
