@@ -262,7 +262,7 @@ private static void simularViaje(double distancia, double velocidad, int oxigeno
         System.out.printf("Oxígeno restante: %d | Combustible restante: %d%n", oxigeno, combustible);
 
         if (random.nextDouble() < 0.5) { // 50% de probabilidad de que ocurra algún evento
-            int eventoAleatorio =  (random.nextInt(4)); // Genera un evento entre 0, 1, 2 y 3
+            int eventoAleatorio =  (random.nextInt(5)); // Genera un evento entre 0, 1, 2, 3 y 4
             switch (eventoAleatorio) {
                 case 0: // Evento "Agujero de Gusano"
                     System.out.println("\n¡Has encontrado un agujero de gusano! ¿Deseas tomarlo?");
@@ -312,7 +312,7 @@ private static void simularViaje(double distancia, double velocidad, int oxigeno
                     }
                     break;
 
-                    case 3: 
+                case 3: 
                     System.out.println("\n¡Alerta! Has entrado en una zona de bajas temperaturas.");
                     System.out.println("La temperatura afecta el rendimiento de la nave. Se reduce la velocidad en un 50%.");
                     
@@ -352,8 +352,47 @@ private static void simularViaje(double distancia, double velocidad, int oxigeno
                             return; // Finaliza la simulación
                     }
                 }
-                    break;
+                    break; 
                     
+                case 4: // Evento "Salvar a la perrita Laika"
+                    System.out.println("\n¡Has encontrado a la perrita Laika flotando en el espacio!");
+                    System.out.println("¿Deseas salvarla?");
+                    System.out.println("1. Sí, recoger a Laika.");
+                    System.out.println("2. No, continuar el viaje.");
+                
+                    decision = scanner.nextInt(); // Decisión del usuario
+                
+                    if (decision == 1) {
+                        System.out.println("\n¡Has salvado a Laika! Como recompensa, el viaje será más corto.");
+                        // Reducir el tiempo total de viaje como recompensa 
+                        tiempoTotal *= 0.8;
+                        System.out.printf("El tiempo de viaje ahora será: %.2f horas.%n", tiempoTotal);
+                    } else if (decision == 2) {
+                        System.out.println("\nHas decidido no recoger a Laika.");
+                        System.out.println("De repente, ¡aparecen piratas espaciales!");
+                
+                        // Ejecutar directamente el evento de "Piratas Espaciales"
+                        oxigenoRobado = oxigeno / 2; // Los piratas roban el 50% del oxígeno
+                        combustibleRobado = combustible / 2; // Los piratas roban el 50% del combustible
+                
+                        // Actualizar los recursos después del ataque
+                        oxigeno -= oxigenoRobado;
+                        combustible -= combustibleRobado;
+                
+                        System.out.printf("Los piratas han robado %d tanques de oxígeno y %d galones de combustible.%n",
+                                oxigenoRobado, combustibleRobado);
+                
+                        // Verificar si los recursos son suficientes después del ataque
+                        if (oxigeno <= 0 || combustible <= 0) {
+                            System.out.println("Tus recursos son insuficientes después del ataque de los piratas.");
+                            System.out.println("El viaje ha fallado.");
+                            return; // Finaliza la simulación
+                        }
+                    } else {
+                        System.out.println("\nOpción inválida. Continuando el viaje normalmente.");
+                    }
+                    break;
+
                 default:
                     System.out.println("\nEvento no reconocido. Continuando el viaje...");
                     break;
