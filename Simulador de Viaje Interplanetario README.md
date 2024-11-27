@@ -80,7 +80,7 @@ El proyecto está organizado en un único archivo principal: simulador.java.
 
 2. Consumo de Oxígeno:
 
--Un tanque de oxígeno alcanza para 5 pasajeros por día.
+-Un tanque de oxígeno alcanza para 10 pasajeros por día.
 -El cálculo depende del número de pasajeros y días transcurridos:
 ![image](https://github.com/user-attachments/assets/0cd4511d-7954-435b-88fd-4c024270bc6c)
 

@@ -93,20 +93,15 @@ public class simulador {
                                 if (velocidadNave == 0) {
                                     System.err.printf("%nPrimero debe seleccionar una nave antes de ingresar pasajeros.%n");
                                 } else {
-                                    boolean pasajerosValidos = false;
-                                    int capacidadMaxima = obtenerCapacidadMaximaNave(velocidadNave);
-                            
-                                    do {
-                                        System.out.printf("%nIngrese la cantidad de pasajeros que van a viajar : %n", capacidadMaxima);
+
+                                    System.out.printf("%n%nIngrese la cantidad de pasajeros que van a viajar : %n");
                                         pasajeros = entrada.nextInt();
                             
                                         if (pasajeros <= 0) {
                                             System.err.printf("Debe ingresar al menos 1 pasajero.%n");
                                         } else {
                                             System.out.printf("Cantidad de pasajeros confirmada: %d%n", pasajeros);
-                                            pasajerosValidos = true;
                                         }
-                                    } while (!pasajerosValidos);
                                 }
                                 break;
                             case 3:
@@ -496,19 +491,7 @@ private static void simularViaje(double distancia, double velocidad, double oxig
             return true;
         }
     }
-    private static int obtenerCapacidadMaximaNave(double velocidadNave) {
-        if (velocidadNave == 1900000) { // Falcon001
-            return 10;
-        } else if (velocidadNave == 3500000) { // Falcon002
-            return 5;
-        } else if (velocidadNave == 2700000) { // Falcon003
-            return 7;
-        } else if (velocidadNave == 3000000) { // Falcon004
-            return 8;
-        } else {
-            return 0; // En caso de que no haya una nave seleccionada
-        }
-    }
+
     private static int[] obtenerCapacidadMaximaCombustibleYOxigeno(double velocidadNave) {
         if (velocidadNave == 1900000) { // Falcon001
             return new int[] { 100, 250 }; // {combustibleMax, oxigenoMax}
