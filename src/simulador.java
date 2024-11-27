@@ -212,13 +212,13 @@ public class simulador {
     return true; // Recursos suficientes
 }
     
-private static void simularViaje(double distancia, double velocidad, int oxigeno, int combustible, int pasajeros) {
+private static void simularViaje(double distancia, double velocidad, double oxigeno, int combustible, int pasajeros) {
     Random random = new Random();
     Scanner scanner = new Scanner(System.in);
     double progreso = 0;
     double tiempoTotal = distancia / velocidad;
     double tiempoTranscurrido = 0, tiempoExtra = 0;
-    int consumoOxigenoPorDia = pasajeros; // Consumo de oxígeno por día según el número de pasajeros
+    double consumoOxigenoPorDia = 0.1 * pasajeros; // Consumo de oxígeno por día según el número de pasajeros
     int consumoCombustiblePorkilometros = 1;    // Consumo de combustible por día
     int[] capacidades = obtenerCapacidadMaximaCombustibleYOxigeno(velocidad); // Límites máximos
     int maxCombustible = capacidades[0];
@@ -241,7 +241,7 @@ private static void simularViaje(double distancia, double velocidad, int oxigeno
                 tiempoTranscurrido += tiempoTotal / 10;
             
                 // Consumir recursos asegurándote de no bajar de cero
-                int oxigenoConsumido = Math.min(consumoOxigenoPorDia, oxigeno); 
+                double oxigenoConsumido = Math.min(consumoOxigenoPorDia, oxigeno); 
                 int combustibleConsumido = Math.min(consumoCombustiblePorkilometros, combustible);
 
                 // Consumo de oxígeno por días y pasajeros
@@ -270,7 +270,7 @@ private static void simularViaje(double distancia, double velocidad, int oxigeno
                 }
                 System.out.println("]");
             
-                System.out.printf("Progreso: %.0f%% | Oxígeno restante: %d | Combustible restante: %d%n", 
+                System.out.printf("Progreso: %.0f%% | Oxígeno restante: %.0f | Combustible restante: %d%n", 
                                   progreso, oxigeno, combustible);
             
                 // Verificar si los recursos son insuficientes
@@ -284,7 +284,7 @@ private static void simularViaje(double distancia, double velocidad, int oxigeno
                         // Recargar recursos al máximo permitido por la nave
                         oxigeno = maxOxigeno;
                         combustible = maxCombustible;
-                        System.out.printf("Recargando... Oxígeno: %d | Combustible: %d%n", oxigeno, combustible);
+                        System.out.printf("%nRecargando... Oxígeno: %.0f | Combustible: %d%n", oxigeno, combustible);
                     } else {
                         System.out.println("Has decidido no detenerte en la estación espacial.");
                         System.out.println("El viaje no podrá continuar sin recursos.");
@@ -327,14 +327,14 @@ private static void simularViaje(double distancia, double velocidad, int oxigeno
 
                 case 2: // Evento "Piratas Espaciales"      
                     System.out.println("\n¡Cuidado! Has sido atacado por piratas espaciales.");
-                    int oxigenoRobado = oxigeno / 2; // Los piratas roban el 50% del oxígeno
+                    var oxigenoRobado = oxigeno / 2; // Los piratas roban el 50% del oxígeno
                     int combustibleRobado = combustible / 2; // Los piratas roban el 50% del combustible
         
                     // Actualiza los recursos
                     oxigeno -= oxigenoRobado;
                     combustible -= combustibleRobado;
         
-                    System.out.printf("Los piratas espaciales han robado el 50%% de tus recursos: %d tanques de oxígeno y %d galones de combustible.%n",
+                    System.out.printf("Los piratas espaciales han robado el 50%% de tus recursos: %.0f tanques de oxígeno y %d galones de combustible.%n",
                             oxigenoRobado, combustibleRobado);
         
                     // Mensaje si los recursos son insuficientes después del ataque
@@ -410,7 +410,7 @@ private static void simularViaje(double distancia, double velocidad, int oxigeno
                         oxigeno -= oxigenoRobado;
                         combustible -= combustibleRobado;
                 
-                        System.out.printf("Los piratas han robado %d tanques de oxígeno y %d galones de combustible.%n",
+                        System.out.printf("Los piratas han robado %.0f tanques de oxígeno y %d galones de combustible.%n",
                                 oxigenoRobado, combustibleRobado);
                 
                         // Verificar si los recursos son suficientes después del ataque
@@ -441,7 +441,7 @@ private static void simularViaje(double distancia, double velocidad, int oxigeno
                 // Recargar recursos al máximo permitido por la nave
                 oxigeno = maxOxigeno;
                 combustible = maxCombustible;
-                System.out.printf("Recargando... Oxígeno: %d | Combustible: %d%n", oxigeno, combustible);
+                System.out.printf("Recargando... Oxígeno: %.0f | Combustible: %d%n", oxigeno, combustible);
             } else {
                 System.out.println("Continuando sin detenerse en la estación. El viaje podría fallar.");
 
