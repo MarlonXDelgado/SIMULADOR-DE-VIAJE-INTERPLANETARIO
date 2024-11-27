@@ -94,13 +94,11 @@ public class simulador {
                                     int capacidadMaxima = obtenerCapacidadMaximaNave(velocidadNave);
                             
                                     do {
-                                        System.out.printf("%nIngrese la cantidad de pasajeros que van a viajar (máximo permitido: %d): %n", capacidadMaxima);
+                                        System.out.printf("%nIngrese la cantidad de pasajeros que van a viajar : %n", capacidadMaxima);
                                         pasajeros = entrada.nextInt();
                             
                                         if (pasajeros <= 0) {
                                             System.err.printf("Debe ingresar al menos 1 pasajero.%n");
-                                        } else if (pasajeros > capacidadMaxima) {
-                                            System.err.printf("La cantidad ingresada supera la capacidad máxima de la nave. Intente nuevamente.%n");
                                         } else {
                                             System.out.printf("Cantidad de pasajeros confirmada: %d%n", pasajeros);
                                             pasajerosValidos = true;
@@ -147,13 +145,13 @@ public class simulador {
                                     System.err.printf(
                                             "%nPara calcular la duracion del viaje debe de elegir un planeta y escoger una nave...%n%n");
                                 } else {
-                                    System.out.printf("%nLa duracion del viaje seria aproximadamente de: %.2f horas.",
+                                    System.out.printf("%nLa duracion del viaje seria aproximadamente de: %.1f dias.",
                                             tripDuration(velocidadNave, distanciaPlaneta));
                                 }
 
                                 break;
                             case 5:
-                                   System.out.println("Regresando al menú principal...");
+                                   System.out.printf("%nRegresando al menú principal...%n");
                                    break; 
 
                             default:
@@ -214,53 +212,90 @@ public class simulador {
     return true; // Recursos suficientes
 }
     
-private static void simularViaje(double distancia, double velocidad, int oxigeno, int combustible, int pasajeros) {
+private static void simularViaje(double distancia, double velocidad, double oxigeno, int combustible, int pasajeros) {
     Random random = new Random();
     Scanner scanner = new Scanner(System.in);
     double progreso = 0;
     double tiempoTotal = distancia / velocidad;
     double tiempoTranscurrido = 0, tiempoExtra = 0;
-    int consumoOxigenoPorDia = pasajeros; // Consumo de oxígeno por día según el número de pasajeros
-    int consumoCombustiblePorDia = 1;    // Consumo de combustible por día
+    double consumoOxigenoPorDia = 0.1 * pasajeros; // Consumo de oxígeno por día según el número de pasajeros
+    int consumoCombustiblePorkilometros = 1;    // Consumo de combustible por día
     int[] capacidades = obtenerCapacidadMaximaCombustibleYOxigeno(velocidad); // Límites máximos
     int maxCombustible = capacidades[0];
     int maxOxigeno = capacidades[1];
-    int consumoOxigenoPorHora = pasajeros; // Oxígeno consumido por hora, depende del número de pasajeros
-    int consumoCombustiblePorHora = 1;    // Combustible consumido por hora, constante
+    final int kilometrosporgalon = 5000000;
+    final int pasajerosportanque= 5;    // Oxígeno: 1 tanque para 5 pasajeros por día
+      
 
 
-    System.out.printf("%nIniciando viaje...%nDistancia: %.2f km%nVelocidad: %.2f km/h%nTiempo estimado: %.2f horas%n",
+    System.out.printf("%nIniciando viaje...%nDistancia: %.2f km%nVelocidad: %.2f km/dias %nTiempo estimado: %.2f dias%n",
             distancia, velocidad, tiempoTotal);
 
-    while (progreso < 100) {
-        try {
-            Thread.sleep(2000); // Simula tiempo transcurrido
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+            while (progreso < 100) {
+                try {
+                    Thread.sleep(2000); // Simula tiempo transcurrido
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            
+                progreso += 10;
+                tiempoTranscurrido += tiempoTotal / 10;
+            
+                // Consumir recursos asegurándote de no bajar de cero
+                double oxigenoConsumido = Math.min(consumoOxigenoPorDia, oxigeno); 
+                int combustibleConsumido = Math.min(consumoCombustiblePorkilometros, combustible);
 
-        progreso += 10;
-        tiempoTranscurrido += tiempoTotal / 10;
-        oxigeno -= consumoOxigenoPorDia;
-        combustible -= consumoCombustiblePorDia;
+                // Consumo de oxígeno por días y pasajeros
+                // Calcular consumo de oxígeno
+                int diasTranscurridos = (int) Math.ceil(tiempoTranscurrido / 24.0); // Días completos transcurridos
+                int tanquesPorDia = (int) Math.ceil((double) pasajeros / pasajerosportanque); // Tanques necesarios por día
+                oxigenoConsumido = tanquesPorDia * diasTranscurridos;
+                oxigeno = Math.max(oxigeno - oxigenoConsumido, 0); // Evitar números negativos
 
-
-        // Reducir recursos proporcionalmente al tiempo transcurrido en esta iteración
-        oxigeno -= (int) Math.ceil(tiempoTranscurrido * consumoOxigenoPorHora);
-        combustible -= (int) Math.ceil(tiempoTranscurrido * consumoCombustiblePorHora);
-
-        // Mostrar progreso del viaje
-        System.out.printf("Progreso: %.0f%% [", progreso);
-        for (int i = 0; i < progreso / 10; i++) {
-            System.out.print("-");
-        }
-        for (int i = (int) progreso / 10; i < 10; i++) {
-            System.out.print(" ");
-        }
-        System.out.println("]");
-
-        System.out.printf("Oxígeno restante: %d | Combustible restante: %d%n", oxigeno, combustible);
-
+                // Consumo de combustible por kilómetros recorridos
+               double distanciaRecorrida = (progreso / 100.0) * distancia;
+               combustibleConsumido = (int) Math.ceil(distanciaRecorrida / kilometrosporgalon);
+               combustible = Math.max(combustible - combustibleConsumido, 0); // Evitar números negativos
+            
+                oxigeno -= oxigenoConsumido;
+                combustible -= combustibleConsumido;
+            
+                // Evitar números negativos (reducir al mínimo de cero)
+                oxigeno = Math.max(oxigeno, 0);
+                combustible = Math.max(combustible, 0);
+            
+                // Mostrar progreso del viaje
+                System.out.printf("Progreso: %.0f%% [", progreso);
+                for (int i = 0; i < progreso / 10; i++) {
+                    System.out.print("-");
+                }
+                for (int i = (int) progreso / 10; i < 10; i++) {
+                    System.out.print(" ");
+                }
+                System.out.println("]");
+            
+                System.out.printf("Progreso: %.0f%% | Oxígeno restante: %.0f | Combustible restante: %d%n", 
+                                  progreso, oxigeno, combustible);
+            
+                // Verificar si los recursos son insuficientes
+                if (oxigeno == 0 || combustible == 0) {
+                    System.out.printf("%n%nRecursos agotados. Se detecta una estación espacial cercana.%n");
+                    System.out.println("¿Desea detenerse en la estación para recargar recursos? (1: Sí / 2: No)");
+            
+                    int decision = scanner.nextInt();
+            
+                    if (decision == 1) {
+                        // Recargar recursos al máximo permitido por la nave
+                        oxigeno = maxOxigeno;
+                        combustible = maxCombustible;
+                        System.out.printf("%nRecargando... Oxígeno: %.0f | Combustible: %d%n", oxigeno, combustible);
+                    } else {
+                        System.out.println("Has decidido no detenerte en la estación espacial.");
+                        System.out.println("El viaje no podrá continuar sin recursos.");
+                        return; // Finaliza la simulación
+                    }
+                }
+            
         if (random.nextDouble() < 0.5) { // 50% de probabilidad de que ocurra algún evento
             int eventoAleatorio =  (random.nextInt(5)); // Genera un evento entre 0, 1, 2, 3 y 4
             switch (eventoAleatorio) {
@@ -288,22 +323,22 @@ private static void simularViaje(double distancia, double velocidad, int oxigeno
                     System.out.println("\n¡Se detecta una lluvia de meteoritos cercana! Ajustando ruta para evitar daños.");
                     tiempoExtra = 5; // Se añade 5 hora al tiempo transcurrido por desvío
                     tiempoTranscurrido += tiempoExtra;
-                    oxigeno -= (int) Math.ceil(tiempoExtra * consumoOxigenoPorHora);
-                    combustible -= (int) Math.ceil(tiempoExtra * consumoCombustiblePorHora);
-                    System.out.println("Debido al desvío, el viaje tomará 5 horas adicionales.");
+                    oxigeno -= (int) Math.ceil(tiempoExtra * consumoOxigenoPorDia);
+                    combustible -= (int) Math.ceil(tiempoExtra * consumoCombustiblePorkilometros);
+                    System.out.println("Debido al desvío, el viaje tomará 5 dias adicionales.");
 
                     break;
 
                 case 2: // Evento "Piratas Espaciales"      
                     System.out.println("\n¡Cuidado! Has sido atacado por piratas espaciales.");
-                    int oxigenoRobado = oxigeno / 2; // Los piratas roban el 50% del oxígeno
+                    var oxigenoRobado = oxigeno / 2; // Los piratas roban el 50% del oxígeno
                     int combustibleRobado = combustible / 2; // Los piratas roban el 50% del combustible
         
                     // Actualiza los recursos
                     oxigeno -= oxigenoRobado;
                     combustible -= combustibleRobado;
         
-                    System.out.printf("Los piratas espaciales han robado el 50%% de tus recursos: %d tanques de oxígeno y %d galones de combustible.%n",
+                    System.out.printf("Los piratas espaciales han robado el 50%% de tus recursos: %.0f tanques de oxígeno y %d galones de combustible.%n",
                             oxigenoRobado, combustibleRobado);
         
                     // Mensaje si los recursos son insuficientes después del ataque
@@ -322,14 +357,14 @@ private static void simularViaje(double distancia, double velocidad, int oxigeno
                     // Calcular el impacto en el tiempo y recursos
                     double tiempoRestante = (distancia - (progreso / 100.0) * distancia) / velocidad;
                     int oxigenoExtra = (int) Math.ceil(tiempoRestante * consumoOxigenoPorDia);
-                    int combustibleExtra = (int) Math.ceil(tiempoRestante * consumoCombustiblePorDia);
+                    int combustibleExtra = (int) Math.ceil(tiempoRestante * consumoCombustiblePorkilometros);
                 
                     // Ajustar los recursos restantes
                     oxigeno -= (int) Math.ceil(oxigenoExtra);
                     combustible -= (int) Math.ceil(combustibleExtra);
                 
                     System.out.printf("La velocidad actual de la nave es ahora: %.2f km/h%n", velocidad);
-                    System.out.printf("Se estima que tomará %.2f horas adicionales llegar a tu destino.%n", tiempoRestante);
+                    System.out.printf("Se estima que tomará %.2f dias adicionales llegar a tu destino.%n", tiempoRestante);
                     System.out.printf("El consumo extra será de %d tanques de oxígeno y %d galones de combustible.%n",
                             oxigenoExtra, combustibleExtra);
                 
@@ -366,7 +401,7 @@ private static void simularViaje(double distancia, double velocidad, int oxigeno
                         System.out.println("\n¡Has salvado a Laika! Como recompensa, el viaje será más corto.");
                         // Reducir el tiempo total de viaje como recompensa 
                         tiempoTotal *= 0.8;
-                        System.out.printf("El tiempo de viaje ahora será: %.2f horas.%n", tiempoTotal);
+                        System.out.printf("El tiempo de viaje ahora será: %.2f dias.%n", tiempoTotal);
                     } else if (decision == 2) {
                         System.out.println("\nHas decidido no recoger a Laika.");
                         System.out.println("De repente, ¡aparecen piratas espaciales!");
@@ -379,7 +414,7 @@ private static void simularViaje(double distancia, double velocidad, int oxigeno
                         oxigeno -= oxigenoRobado;
                         combustible -= combustibleRobado;
                 
-                        System.out.printf("Los piratas han robado %d tanques de oxígeno y %d galones de combustible.%n",
+                        System.out.printf("Los piratas han robado %.0f tanques de oxígeno y %d galones de combustible.%n",
                                 oxigenoRobado, combustibleRobado);
                 
                         // Verificar si los recursos son suficientes después del ataque
@@ -410,7 +445,7 @@ private static void simularViaje(double distancia, double velocidad, int oxigeno
                 // Recargar recursos al máximo permitido por la nave
                 oxigeno = maxOxigeno;
                 combustible = maxCombustible;
-                System.out.printf("Recargando... Oxígeno: %d | Combustible: %d%n", oxigeno, combustible);
+                System.out.printf("Recargando... Oxígeno: %.0f | Combustible: %d%n", oxigeno, combustible);
             } else {
                 System.out.println("Continuando sin detenerse en la estación. El viaje podría fallar.");
 
@@ -425,7 +460,7 @@ private static void simularViaje(double distancia, double velocidad, int oxigeno
         }
     }
 
-    System.out.printf("%n¡Has llegado a tu destino! Tiempo total: %.2f horas%n", tiempoTranscurrido);
+        System.out.printf("%n¡Has llegado a tu destino! Tiempo total: %.2f dias %n", tiempoTranscurrido);
     
 }
 
@@ -500,7 +535,7 @@ private static void simularViaje(double distancia, double velocidad, int oxigeno
                     Nombre: Falcon001
                     Especialidad: Carga de pasajeros
                     Capacidad de carga: 10 personas
-                    Velocidad Maxima: 1.900.000 km/h
+                    Velocidad Maxima: 1.900.000 km/dia
                     Tanques de oxigeno: 250
                     Combustible maximo: 100 galones
 
@@ -513,7 +548,7 @@ private static void simularViaje(double distancia, double velocidad, int oxigeno
                     Nombre: Falcon002
                     Especialidad: Velocidad Ultra
                     Capacidad de carga: 5 personas
-                    Velocidad Maxima: 3.500.000 km/h
+                    Velocidad Maxima: 3.500.000 km/dia
                     Tanques de oxigeno: 100
                     Combustible maximo: 50 galones
 
@@ -526,7 +561,7 @@ private static void simularViaje(double distancia, double velocidad, int oxigeno
                     Nombre: Falcon003
                     Especialidad: Carga Mixta
                     Capacidad de carga: 7 personas
-                    Velocidad Maxima: 2.700.000 km/h
+                    Velocidad Maxima: 2.700.000 km/dia
                     Tanques de oxigeno: 180
                     Combustible maximo: 70 galones
 
@@ -539,7 +574,7 @@ private static void simularViaje(double distancia, double velocidad, int oxigeno
                     Nombre: Falcon004
                     Especialidad: Reserva de oxigeno
                     Capacidad de carga: 8 personas
-                    Velocidad Maxima: 3.000.000 km/h
+                    Velocidad Maxima: 3.000.000 km/dia
                     Tanques de oxigeno: 200
                     Combustible maximo: 60 galones
 
