@@ -224,10 +224,11 @@ private static void simularViaje(double distancia, double velocidad, double oxig
     int maxCombustible = capacidades[0];
     int maxOxigeno = capacidades[1];
     final int kilometrosporgalon = 5000000;
+    final int pasajerosportanque= 5;    // Oxígeno: 1 tanque para 5 pasajeros por día
       
 
 
-    System.out.printf("%nIniciando viaje...%nDistancia: %.1f km%nVelocidad: %.0f km/h%nTiempo estimado: %.2f dias%n",
+    System.out.printf("%nIniciando viaje...%nDistancia: %.2f km%nVelocidad: %.2f km/dias %nTiempo estimado: %.2f dias%n",
             distancia, velocidad, tiempoTotal);
 
             while (progreso < 100) {
@@ -245,7 +246,10 @@ private static void simularViaje(double distancia, double velocidad, double oxig
                 int combustibleConsumido = Math.min(consumoCombustiblePorkilometros, combustible);
 
                 // Consumo de oxígeno por días y pasajeros
-                oxigenoConsumido = (int) Math.ceil(tiempoTranscurrido * consumoOxigenoPorDia);
+                // Calcular consumo de oxígeno
+                int diasTranscurridos = (int) Math.ceil(tiempoTranscurrido / 24.0); // Días completos transcurridos
+                int tanquesPorDia = (int) Math.ceil((double) pasajeros / pasajerosportanque); // Tanques necesarios por día
+                oxigenoConsumido = tanquesPorDia * diasTranscurridos;
                 oxigeno = Math.max(oxigeno - oxigenoConsumido, 0); // Evitar números negativos
 
                 // Consumo de combustible por kilómetros recorridos
@@ -456,7 +460,7 @@ private static void simularViaje(double distancia, double velocidad, double oxig
         }
     }
 
-    System.out.printf("%n¡Has llegado a tu destino! Tiempo total: %.2f dias%n", tiempoTranscurrido);
+        System.out.printf("%n¡Has llegado a tu destino! Tiempo total: %.2f dias %n", tiempoTranscurrido);
     
 }
 
@@ -531,7 +535,7 @@ private static void simularViaje(double distancia, double velocidad, double oxig
                     Nombre: Falcon001
                     Especialidad: Carga de pasajeros
                     Capacidad de carga: 10 personas
-                    Velocidad Maxima: 1.900.000 km/h
+                    Velocidad Maxima: 1.900.000 km/dia
                     Tanques de oxigeno: 250
                     Combustible maximo: 100 galones
 
@@ -544,7 +548,7 @@ private static void simularViaje(double distancia, double velocidad, double oxig
                     Nombre: Falcon002
                     Especialidad: Velocidad Ultra
                     Capacidad de carga: 5 personas
-                    Velocidad Maxima: 3.500.000 km/h
+                    Velocidad Maxima: 3.500.000 km/dia
                     Tanques de oxigeno: 100
                     Combustible maximo: 50 galones
 
@@ -557,7 +561,7 @@ private static void simularViaje(double distancia, double velocidad, double oxig
                     Nombre: Falcon003
                     Especialidad: Carga Mixta
                     Capacidad de carga: 7 personas
-                    Velocidad Maxima: 2.700.000 km/h
+                    Velocidad Maxima: 2.700.000 km/dia
                     Tanques de oxigeno: 180
                     Combustible maximo: 70 galones
 
@@ -570,7 +574,7 @@ private static void simularViaje(double distancia, double velocidad, double oxig
                     Nombre: Falcon004
                     Especialidad: Reserva de oxigeno
                     Capacidad de carga: 8 personas
-                    Velocidad Maxima: 3.000.000 km/h
+                    Velocidad Maxima: 3.000.000 km/dia
                     Tanques de oxigeno: 200
                     Combustible maximo: 60 galones
 
