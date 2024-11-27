@@ -16,7 +16,7 @@ public class simulador {
             //Menu principal del juego que muestra las opciones disponibles del simulador del viaje interplanetario.
             System.out.printf("%n%n====SIMULADOR DE VIAJE INTERPLANETARIO=====%n%n");
             System.out.println("1. Seleccion de planetas de destino");
-            System.out.println("2. Seleccion de nave espacial");
+            System.out.println("2. Gestion de la nave espacial");
             System.out.println("3. Iniciar simulacion del viaje");
             System.out.printf("4. Salir%n%n");
 
