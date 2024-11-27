@@ -145,13 +145,13 @@ public class simulador {
                                     System.err.printf(
                                             "%nPara calcular la duracion del viaje debe de elegir un planeta y escoger una nave...%n%n");
                                 } else {
-                                    System.out.printf("%nLa duracion del viaje seria aproximadamente de: %.2f dias.",
+                                    System.out.printf("%nLa duracion del viaje seria aproximadamente de: %.1f dias.",
                                             tripDuration(velocidadNave, distanciaPlaneta));
                                 }
 
                                 break;
                             case 5:
-                                   System.out.println("Regresando al menú principal...");
+                                   System.out.printf("%nRegresando al menú principal...%n");
                                    break; 
 
                             default:
@@ -279,7 +279,7 @@ private static void simularViaje(double distancia, double velocidad, int oxigeno
             
                 // Verificar si los recursos son insuficientes
                 if (oxigeno == 0 || combustible == 0) {
-                    System.out.println("Recursos agotados. Se detecta una estación espacial cercana.");
+                    System.out.printf("%n%nRecursos agotados. Se detecta una estación espacial cercana.%n");
                     System.out.println("¿Desea detenerse en la estación para recargar recursos? (1: Sí / 2: No)");
             
                     int decision = scanner.nextInt();
@@ -364,7 +364,7 @@ private static void simularViaje(double distancia, double velocidad, int oxigeno
                     combustible -= (int) Math.ceil(combustibleExtra);
                 
                     System.out.printf("La velocidad actual de la nave es ahora: %.2f km/h%n", velocidad);
-                    System.out.printf("Se estima que tomará %.2f horas adicionales llegar a tu destino.%n", tiempoRestante);
+                    System.out.printf("Se estima que tomará %.2f dias adicionales llegar a tu destino.%n", tiempoRestante);
                     System.out.printf("El consumo extra será de %d tanques de oxígeno y %d galones de combustible.%n",
                             oxigenoExtra, combustibleExtra);
                 
@@ -460,7 +460,7 @@ private static void simularViaje(double distancia, double velocidad, int oxigeno
         }
     }
 
-    System.out.printf("%n¡Has llegado a tu destino! Tiempo total: %.2f dias %n", tiempoTranscurrido);
+        System.out.printf("%n¡Has llegado a tu destino! Tiempo total: %.2f dias %n", tiempoTranscurrido);
     
 }
 
