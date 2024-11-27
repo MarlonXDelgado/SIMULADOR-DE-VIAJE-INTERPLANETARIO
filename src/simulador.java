@@ -94,13 +94,11 @@ public class simulador {
                                     int capacidadMaxima = obtenerCapacidadMaximaNave(velocidadNave);
                             
                                     do {
-                                        System.out.printf("%nIngrese la cantidad de pasajeros que van a viajar (máximo permitido: %d): %n", capacidadMaxima);
+                                        System.out.printf("%nIngrese la cantidad de pasajeros que van a viajar : %n", capacidadMaxima);
                                         pasajeros = entrada.nextInt();
                             
                                         if (pasajeros <= 0) {
                                             System.err.printf("Debe ingresar al menos 1 pasajero.%n");
-                                        } else if (pasajeros > capacidadMaxima) {
-                                            System.err.printf("La cantidad ingresada supera la capacidad máxima de la nave. Intente nuevamente.%n");
                                         } else {
                                             System.out.printf("Cantidad de pasajeros confirmada: %d%n", pasajeros);
                                             pasajerosValidos = true;
@@ -147,7 +145,7 @@ public class simulador {
                                     System.err.printf(
                                             "%nPara calcular la duracion del viaje debe de elegir un planeta y escoger una nave...%n%n");
                                 } else {
-                                    System.out.printf("%nLa duracion del viaje seria aproximadamente de: %.2f horas.",
+                                    System.out.printf("%nLa duracion del viaje seria aproximadamente de: %.2f dias.",
                                             tripDuration(velocidadNave, distanciaPlaneta));
                                 }
 
@@ -221,46 +219,79 @@ private static void simularViaje(double distancia, double velocidad, int oxigeno
     double tiempoTotal = distancia / velocidad;
     double tiempoTranscurrido = 0, tiempoExtra = 0;
     int consumoOxigenoPorDia = pasajeros; // Consumo de oxígeno por día según el número de pasajeros
-    int consumoCombustiblePorDia = 1;    // Consumo de combustible por día
+    int consumoCombustiblePorkilometros = 1;    // Consumo de combustible por día
     int[] capacidades = obtenerCapacidadMaximaCombustibleYOxigeno(velocidad); // Límites máximos
     int maxCombustible = capacidades[0];
     int maxOxigeno = capacidades[1];
-    int consumoOxigenoPorHora = pasajeros; // Oxígeno consumido por hora, depende del número de pasajeros
-    int consumoCombustiblePorHora = 1;    // Combustible consumido por hora, constante
+    final int kilometrosporgalon = 5000000;
+      
 
 
     System.out.printf("%nIniciando viaje...%nDistancia: %.2f km%nVelocidad: %.2f km/h%nTiempo estimado: %.2f horas%n",
             distancia, velocidad, tiempoTotal);
 
-    while (progreso < 100) {
-        try {
-            Thread.sleep(2000); // Simula tiempo transcurrido
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+            while (progreso < 100) {
+                try {
+                    Thread.sleep(2000); // Simula tiempo transcurrido
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            
+                progreso += 10;
+                tiempoTranscurrido += tiempoTotal / 10;
+            
+                // Consumir recursos asegurándote de no bajar de cero
+                int oxigenoConsumido = Math.min(consumoOxigenoPorDia, oxigeno); 
+                int combustibleConsumido = Math.min(consumoCombustiblePorkilometros, combustible);
 
-        progreso += 10;
-        tiempoTranscurrido += tiempoTotal / 10;
-        oxigeno -= consumoOxigenoPorDia;
-        combustible -= consumoCombustiblePorDia;
+                // Consumo de oxígeno por días y pasajeros
+                oxigenoConsumido = (int) Math.ceil(tiempoTranscurrido * consumoOxigenoPorDia);
+                oxigeno = Math.max(oxigeno - oxigenoConsumido, 0); // Evitar números negativos
 
-
-        // Reducir recursos proporcionalmente al tiempo transcurrido en esta iteración
-        oxigeno -= (int) Math.ceil(tiempoTranscurrido * consumoOxigenoPorHora);
-        combustible -= (int) Math.ceil(tiempoTranscurrido * consumoCombustiblePorHora);
-
-        // Mostrar progreso del viaje
-        System.out.printf("Progreso: %.0f%% [", progreso);
-        for (int i = 0; i < progreso / 10; i++) {
-            System.out.print("-");
-        }
-        for (int i = (int) progreso / 10; i < 10; i++) {
-            System.out.print(" ");
-        }
-        System.out.println("]");
-
-        System.out.printf("Oxígeno restante: %d | Combustible restante: %d%n", oxigeno, combustible);
-
+                // Consumo de combustible por kilómetros recorridos
+               double distanciaRecorrida = (progreso / 100.0) * distancia;
+               combustibleConsumido = (int) Math.ceil(distanciaRecorrida / kilometrosporgalon);
+               combustible = Math.max(combustible - combustibleConsumido, 0); // Evitar números negativos
+            
+                oxigeno -= oxigenoConsumido;
+                combustible -= combustibleConsumido;
+            
+                // Evitar números negativos (reducir al mínimo de cero)
+                oxigeno = Math.max(oxigeno, 0);
+                combustible = Math.max(combustible, 0);
+            
+                // Mostrar progreso del viaje
+                System.out.printf("Progreso: %.0f%% [", progreso);
+                for (int i = 0; i < progreso / 10; i++) {
+                    System.out.print("-");
+                }
+                for (int i = (int) progreso / 10; i < 10; i++) {
+                    System.out.print(" ");
+                }
+                System.out.println("]");
+            
+                System.out.printf("Progreso: %.0f%% | Oxígeno restante: %d | Combustible restante: %d%n", 
+                                  progreso, oxigeno, combustible);
+            
+                // Verificar si los recursos son insuficientes
+                if (oxigeno == 0 || combustible == 0) {
+                    System.out.println("Recursos agotados. Se detecta una estación espacial cercana.");
+                    System.out.println("¿Desea detenerse en la estación para recargar recursos? (1: Sí / 2: No)");
+            
+                    int decision = scanner.nextInt();
+            
+                    if (decision == 1) {
+                        // Recargar recursos al máximo permitido por la nave
+                        oxigeno = maxOxigeno;
+                        combustible = maxCombustible;
+                        System.out.printf("Recargando... Oxígeno: %d | Combustible: %d%n", oxigeno, combustible);
+                    } else {
+                        System.out.println("Has decidido no detenerte en la estación espacial.");
+                        System.out.println("El viaje no podrá continuar sin recursos.");
+                        return; // Finaliza la simulación
+                    }
+                }
+            
         if (random.nextDouble() < 0.5) { // 50% de probabilidad de que ocurra algún evento
             int eventoAleatorio =  (random.nextInt(5)); // Genera un evento entre 0, 1, 2, 3 y 4
             switch (eventoAleatorio) {
@@ -288,8 +319,8 @@ private static void simularViaje(double distancia, double velocidad, int oxigeno
                     System.out.println("\n¡Se detecta una lluvia de meteoritos cercana! Ajustando ruta para evitar daños.");
                     tiempoExtra = 5; // Se añade 5 hora al tiempo transcurrido por desvío
                     tiempoTranscurrido += tiempoExtra;
-                    oxigeno -= (int) Math.ceil(tiempoExtra * consumoOxigenoPorHora);
-                    combustible -= (int) Math.ceil(tiempoExtra * consumoCombustiblePorHora);
+                    oxigeno -= (int) Math.ceil(tiempoExtra * consumoOxigenoPorDia);
+                    combustible -= (int) Math.ceil(tiempoExtra * consumoCombustiblePorkilometros);
                     System.out.println("Debido al desvío, el viaje tomará 5 horas adicionales.");
 
                     break;
@@ -322,7 +353,7 @@ private static void simularViaje(double distancia, double velocidad, int oxigeno
                     // Calcular el impacto en el tiempo y recursos
                     double tiempoRestante = (distancia - (progreso / 100.0) * distancia) / velocidad;
                     int oxigenoExtra = (int) Math.ceil(tiempoRestante * consumoOxigenoPorDia);
-                    int combustibleExtra = (int) Math.ceil(tiempoRestante * consumoCombustiblePorDia);
+                    int combustibleExtra = (int) Math.ceil(tiempoRestante * consumoCombustiblePorkilometros);
                 
                     // Ajustar los recursos restantes
                     oxigeno -= (int) Math.ceil(oxigenoExtra);
