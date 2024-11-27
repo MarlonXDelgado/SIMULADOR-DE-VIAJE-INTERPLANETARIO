@@ -211,7 +211,7 @@ public class simulador {
     System.out.println("Recursos suficientes para el viaje.");
     return true; // Recursos suficientes
 }
-    
+   //Maneja la lógica principal de la simulación 
 private static void simularViaje(double distancia, double velocidad, double oxigeno, int combustible, int pasajeros) {
     Random random = new Random();
     Scanner scanner = new Scanner(System.in);
@@ -219,7 +219,7 @@ private static void simularViaje(double distancia, double velocidad, double oxig
     double tiempoTotal = distancia / velocidad;
     double tiempoTranscurrido = 0, tiempoExtra = 0;
     double consumoOxigenoPorDia = 0.1 * pasajeros; // Consumo de oxígeno por día según el número de pasajeros
-    int consumoCombustiblePorkilometros = 1;    // Consumo de combustible por día
+    int consumoCombustiblePorkilometros = 1;    // Consumo de combustible por 
     int[] capacidades = obtenerCapacidadMaximaCombustibleYOxigeno(velocidad); // Límites máximos
     int maxCombustible = capacidades[0];
     int maxOxigeno = capacidades[1];
