@@ -74,15 +74,15 @@ El proyecto está organizado en un único archivo principal: simulador.java.
 ##Cálculos Implementados
 1. Consumo de Combustible:
 
--Un galón de combustible permite recorrer 50,000,000 km.
--El cálculo se realiza dinámicamente según la distancia recorrida:
-![image](https://github.com/user-attachments/assets/a74ce3bf-fa18-4905-a461-76c3660b0d12)
+-Un galón de combustible permite recorrer 5.000.000 km.
+-El cálculo se realiza dinámicamente según la distancia recorrida
+
 
 2. Consumo de Oxígeno:
 
 -Un tanque de oxígeno alcanza para 10 pasajeros por día.
--El cálculo depende del número de pasajeros y días transcurridos:
-![image](https://github.com/user-attachments/assets/0cd4511d-7954-435b-88fd-4c024270bc6c)
+-El cálculo depende del número de pasajeros y días transcurridos
+
 
 ##Cómo Jugar
 1. Selecciona un planeta de destino.

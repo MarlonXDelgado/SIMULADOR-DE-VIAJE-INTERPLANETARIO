@@ -222,7 +222,7 @@ private static void simularViaje(double distancia, double velocidad, double oxig
     int maxCombustible = capacidades[0];
     int maxOxigeno = capacidades[1];
     final int kilometrosporgalon = 5000000;
-    final int pasajerosportanque= 5;    // Oxígeno: 1 tanque para 5 pasajeros por día
+    final int pasajerosportanque= 10;    // Oxígeno: 1 tanque para 10 pasajeros por día
       
 
 
