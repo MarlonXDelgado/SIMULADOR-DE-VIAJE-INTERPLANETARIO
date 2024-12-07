@@ -4,6 +4,10 @@ El Simulador de Viajes Interplanetarios es un programa interactivo desarrollado 
 
 El programa también incorpora cálculos precisos sobre consumo de recursos basado en pasajeros, tiempo de viaje y distancia recorrida. Además, incluye elementos narrativos como estaciones espaciales, piratas espaciales, zonas de bajas temperaturas y hasta el rescate de la perrita Laika.
 
+## Tecnologías utilizadas
+
+- **Lenguaje:** JAVA
+
 ## Características Principales
 
 1. Selección de Planetas y Naves:
@@ -92,6 +96,19 @@ El proyecto está organizado en un único archivo principal: simulador.java.
 5. Toma decisiones clave que afectarán el progreso del viaje.
 6. Administra eficientemente los recursos para llegar al destino.
 
+## Autores
+
+**Marlon Xavier Delgado Ruiz**  
+- GitHub: [MarlonXDelgado](https://github.com/MarlonXDelgado)  
+- Correo: [marlonxavi6@gmail.com]
+
+**KEVIN ESTEBAN SANCHEZ MENDEZ**  
+- GitHub: [osamu993](https://github.com/osamu993)  
+- Correo: [kevinesmms@gmail.com]
+
+## Contacto
+
+Si tienes preguntas o sugerencias, no dudes en contactarnos a través del correo o abrir un issue en el repositorio.
 
 
 
